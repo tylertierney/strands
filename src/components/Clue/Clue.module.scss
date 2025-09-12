@@ -1,0 +1,26 @@
+.clue {
+  display: flex;
+  flex-direction: column;
+  width: 315px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in hsl, var(--text-color) 50%, transparent);
+  overflow: hidden;
+
+  .label {
+    display: flex;
+    justify-content: center;
+    background-color: var(--found-strand);
+    font-size: 0.85rem;
+    padding: 0.5rem 0;
+    line-height: 0.5;
+  }
+
+  .content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 0.75rem 0;
+  }
+}
