@@ -15,13 +15,17 @@ body {
   --text-color: rgb(241, 241, 241);
   --bg-color: rgb(31, 35, 46);
   --current-strand: rgb(79, 93, 102);
-  --found-strand: rgb(20, 76, 112);
+  --theme-word: rgb(20, 76, 112);
+  --spangram: #c5a600;
+
+  --readable-theme-word: rgb(41, 139, 202);
 
   &.light-theme {
-    --text-color: rgb(19, 19, 19);
-    --bg-color: white;
-    --current-strand: rgb(204, 212, 231);
-    --found-strand: rgb(187, 207, 255);
+    --text-color: rgb(74, 73, 83);
+    --bg-color: #f2f2f2;
+    --current-strand: rgb(208, 212, 223);
+    --theme-word: rgb(187, 207, 255);
+    --spangram: #eed550;
   }
 }
 
@@ -38,87 +42,4 @@ body {
 #root {
   display: flex;
   flex-direction: column;
-}
-
-.grid {
-  display: grid;
-  user-select: none;
-  gap: var(--letter-gap);
-  align-self: center;
-
-  .letter {
-    width: 44px;
-    height: 44px;
-    border-radius: 100%;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    font-size: 26px;
-    line-height: 70%;
-    font-family: monospace;
-  }
-
-  .letter.connector {
-    &::before {
-      content: '';
-      position: absolute;
-      background-color: var(--current-strand);
-      z-index: -1;
-    }
-
-    &.top::before {
-      top: calc(-1 * var(--half-letter-height));
-      width: var(--connector-width);
-      height: var(--letter-height);
-    }
-
-    &.topRight::before {
-      width: var(--connector-width);
-      height: var(--diagonal-connector-length);
-      rotate: 45deg;
-      translate: var(--half-letter-height) calc(-1 * var(--half-letter-height));
-    }
-
-    &.right::before {
-      translate: calc(var(--half-letter-height) + var(--half-gap));
-      height: var(--connector-width);
-      width: var(--letter-height);
-    }
-
-    &.bottomRight::before {
-      width: var(--connector-width);
-      height: var(--diagonal-connector-length);
-      rotate: -45deg;
-      translate: var(--half-letter-height) var(--half-letter-height);
-    }
-
-    &.bottom::before {
-      bottom: -24px;
-      width: var(--connector-width);
-      height: 24px;
-    }
-
-    &.bottomLeft::before {
-      width: var(--connector-width);
-      height: var(--diagonal-connector-length);
-      rotate: 45deg;
-      translate: calc(-1 * var(--half-letter-height)) var(--half-letter-height);
-    }
-
-    &.left::before {
-      translate: calc(-1 * (var(--half-letter-height) + var(--half-gap)));
-      height: var(--connector-width);
-      width: var(--letter-height);
-    }
-
-    &.topLeft::before {
-      width: var(--connector-width);
-      height: var(--diagonal-connector-length);
-      rotate: -45deg;
-      translate: calc(-1 * var(--half-letter-height))
-        calc(-1 * var(--half-letter-height));
-    }
-  }
 }

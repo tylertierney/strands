@@ -1,0 +1,6 @@
+.grid {
+  display: grid;
+  user-select: none;
+  gap: var(--letter-gap);
+  align-self: center;
+}

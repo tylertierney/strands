@@ -1,0 +1,74 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-self: center;
+
+  .result {
+    min-height: 2.5rem;
+    font-weight: bold;
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease-in-out;
+
+    &.bounce {
+      animation: 700ms ease-in-out 1 forwards bounce;
+    }
+
+    &.shake {
+      animation: 700ms ease-in-out 1 forwards shake;
+    }
+  }
+
+  .boardFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30rem;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes shake {
+  0% {
+    translate: 0;
+  }
+  20% {
+    translate: 2px;
+  }
+
+  40% {
+    translate: -2px;
+  }
+
+  60% {
+    translate: 1px;
+  }
+
+  80% {
+    translate: -1px;
+  }
+
+  100% {
+    translate: 0;
+    opacity: 1;
+  }
+}

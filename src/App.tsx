@@ -1,110 +1,190 @@
 import { useState } from 'react'
-import './App.css'
-import { data } from './data'
-import { sunIcon } from './svg/sun'
-import Navbar from './components/Navbar/Navbar'
-import {
-  flattenArrayOfStrings,
-  getConnectorPositions,
-  getWordFromStrand,
-  type Strand,
-} from './utils'
+import { data } from './data.tsx'
+import Navbar from './components/Navbar/Navbar.tsx'
 import Clue from './components/Clue/Clue'
+import styles from './App.module.scss'
+import { matchStrands, type Strand } from './utils'
+import type { DrawEvent } from './components/Board/Board.tsx'
+import Board from './components/Board/Board.tsx'
+import HintButton from './components/HintButton/HintButton.tsx'
 
-const { startingBoard, clue } = data
-const width = startingBoard[0].length
-const height = startingBoard.length
+const grayedOutText = 'color-mix(in hsl, var(--text-color) 80%, transparent)'
+
+const { startingBoard, clue, themeCoords, spangramCoords, solutions } = data
+
+interface FoundWords {
+  themeWords: string[]
+  spangram: string
+  other: Set<string>
+}
+
+interface Result {
+  color: string
+  animation: string
+  result: string
+}
 
 function App() {
-  const [dragging, setDragging] = useState(false)
-  const [currentStrand, setCurrentStrand] = useState<Strand>([])
+  const [currentWord, setCurrentWord] = useState('')
+  const [foundWords, setFoundWords] = useState<FoundWords>({
+    themeWords: [],
+    spangram: '',
+    other: new Set<string>(),
+  })
+  const [result, setResult] = useState<Result>({
+    result: '',
+    animation: '',
+    color: '',
+  })
 
-  const letters = flattenArrayOfStrings(data.startingBoard)
+  const setResultAfterTimeout = (res: Result) => {
+    setTimeout(() => {
+      setResult(res)
+    }, 500)
+  }
 
-  const mouseEnter = (strand: Strand, row: number, col: number) => {
-    if (!dragging) return
+  const handleConfirm = (e: DrawEvent) => {
+    // check length
+    if (e.word.length <= 3) {
+      setResult({
+        result: 'Too short',
+        animation: styles.shake,
+        color: '',
+      })
 
-    const coordAlreadyInStrand = strand.findIndex(
-      ([r, c]) => r === row && c === col
-    )
-    if (coordAlreadyInStrand !== -1) {
-      setCurrentStrand((prev) => [...prev].slice(0, coordAlreadyInStrand + 1))
+      setResultAfterTimeout({
+        result: 'Too short',
+        animation: '',
+        color: grayedOutText,
+      })
+
       return
     }
 
-    setCurrentStrand((prev) => [...prev, [row, col]])
+    // check themeWords
+    for (const themeWord in themeCoords) {
+      if (matchStrands(e.strand, themeCoords[themeWord])) {
+        if (foundWords.themeWords.includes(themeWord)) {
+          setResultAfterTimeout({
+            result: 'Already found',
+            animation: styles.shake,
+            color: grayedOutText,
+          })
+          return
+        }
+
+        setResult({
+          result: themeWord,
+          animation: styles.bounce,
+          color: 'var(--readable-theme-word)',
+        })
+        setFoundWords((prev) => ({
+          ...prev,
+          themeWords: [...prev.themeWords, themeWord],
+        }))
+        return
+      }
+    }
+
+    // check spangram
+    if (matchStrands(e.strand, spangramCoords)) {
+      if (foundWords.spangram === e.word) {
+        setResultAfterTimeout({
+          result: 'Already found',
+          animation: styles.shake,
+          color: grayedOutText,
+        })
+        return
+      }
+
+      setResult({
+        result: e.word,
+        animation: styles.bounce,
+        color: 'var(--spangram)',
+      })
+      setFoundWords((prev) => ({
+        ...prev,
+        spangram: e.word,
+      }))
+      return
+    }
+
+    // check already found
+    if (foundWords.other.has(e.word)) {
+      setResult({
+        result: 'Already found',
+        animation: styles.shake,
+        color: grayedOutText,
+      })
+
+      return
+    }
+
+    // check solutions
+    if (solutions.includes(e.word)) {
+      setResult({
+        result: e.word,
+        animation: styles.bounce,
+        color: grayedOutText,
+      })
+
+      setFoundWords((prev) => ({
+        ...prev,
+        other: new Set([...prev.other, e.word]),
+      }))
+
+      return
+    }
+
+    // not a word
+    setResult({
+      result: 'Not in word list',
+      animation: styles.shake,
+      color: grayedOutText,
+    })
+
+    console.log(foundWords.other)
   }
 
-  const currentWord = getWordFromStrand({
-    strand: currentStrand,
-    rows: data.startingBoard,
-  })
+  const foundThemeStrands: Strand[] = foundWords.themeWords.map(
+    (themeWord) => themeCoords[themeWord]
+  )
+  const foundSpangram: Strand = foundWords.spangram ? spangramCoords : []
 
   return (
     <>
       <Navbar />
-      <Clue clue={clue} />
-      <span style={{ minHeight: '1.5rem' }}>{currentWord ?? ' '}</span>
-      <div
-        className="grid"
-        style={{
-          gridTemplateRows: `repeat(${height}, 1fr)`,
-          gridTemplateColumns: `repeat(${width}, 1fr)`,
-        }}
-        onMouseLeave={() => setCurrentStrand([])}
-        onMouseUp={() => {
-          setDragging(false)
-
-          // console.log(
-          //   getWordFromStrand({
-          //     strand: currentStrand,
-          //     rows: data.startingBoard,
-          //   })
-          // )
-
-          setCurrentStrand([])
-        }}
-      >
-        {letters.map((letter, idx) => {
-          const row = ~~(idx / width)
-          const col = idx % width
-
-          const idxInCurrentStrand = currentStrand.findIndex(
-            ([r, c]) => r === row && c === col
-          )
-
-          const inCurrentStrand = idxInCurrentStrand > -1
-
-          const classes = inCurrentStrand
-            ? `connector ${getConnectorPositions(
-                currentStrand,
-                idxInCurrentStrand
-              )}`
-            : ''
-
-          return (
-            <div
-              className={`
-                letter 
-                ${classes} `}
-              key={idx}
-              style={{
-                backgroundColor: inCurrentStrand
-                  ? 'var(--current-strand)'
-                  : 'unset',
-              }}
-              onMouseDown={() => {
-                setDragging(true)
-                setCurrentStrand([[row, col]])
-              }}
-              onMouseEnter={() => {
-                mouseEnter(currentStrand, row, col)
-              }}
-            >
-              {letter}
-            </div>
-          )
-        })}
+      <div className={styles.content}>
+        <Clue clue={clue} />
+        {currentWord ? (
+          <span className={styles.result}>{currentWord}</span>
+        ) : (
+          <span
+            className={`
+          ${styles.result}
+          ${result.animation}
+          `}
+            style={{ color: result.color }}
+          >
+            {result.result}
+          </span>
+        )}
+        <Board
+          rows={startingBoard}
+          onDraw={(e) => {
+            setCurrentWord(e.word)
+          }}
+          onConfirm={handleConfirm}
+          foundThemeStrands={foundThemeStrands}
+          foundSpangram={foundSpangram}
+        />
+        <div className={styles.boardFooter}>
+          <HintButton>Hint</HintButton>
+          <span>
+            {foundWords.themeWords.length} of {Object.keys(themeCoords).length}{' '}
+            theme words found.
+          </span>
+        </div>
       </div>
     </>
   )

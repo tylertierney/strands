@@ -85,3 +85,26 @@ export const getConnectorPositions = (strand: Strand, idx: number) => {
 export const flattenArrayOfStrings = (arr: string[]): string[] => {
   return arr.flatMap((str) => str.split(''))
 }
+
+export const coordIsDetached = (strand: Strand, row: number, col: number) => {
+  if (!strand.length) return false
+
+  const [endR, endC] = strand.at(-1) as Coords
+
+  const rowDiff = Math.abs(endR - row)
+  const colDiff = Math.abs(endC - col)
+
+  return rowDiff > 1 || colDiff > 1
+}
+
+export const matchStrands = (a: Strand, b: Strand): boolean => {
+  if (a.length !== b.length) return false
+  return a.every(
+    (coord, idx) => coord[0] === b[idx][0] && coord[1] === b[idx][1]
+  )
+}
+
+export const isCoordInStrand = (row: number, col: number, strand: Strand) => {
+  const idx = strand.findIndex(([r, c]) => r === row && c === col)
+  return idx > -1
+}

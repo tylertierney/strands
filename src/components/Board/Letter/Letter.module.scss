@@ -1,0 +1,92 @@
+.letter {
+  width: 44px;
+  height: 44px;
+  border-radius: 100%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: 26px;
+  line-height: 70%;
+  font-family: monospace;
+  border: none;
+  color: var(--text-color);
+  background-color: transparent;
+
+  &.currentStrand {
+    background-color: var(--current-strand);
+  }
+
+  &.themeWord {
+    background-color: var(--theme-word);
+  }
+
+  &.spangram {
+    background-color: var(--spangram);
+  }
+
+  &.connector {
+    // background-color: var(--current-strand);
+
+    &::before {
+      content: '';
+      position: absolute;
+      background-color: inherit;
+      z-index: -1;
+    }
+
+    &.top::before {
+      top: calc(-1 * var(--half-letter-height));
+      width: var(--connector-width);
+      height: var(--letter-height);
+    }
+
+    &.topRight::before {
+      width: var(--connector-width);
+      height: var(--diagonal-connector-length);
+      rotate: 45deg;
+      translate: var(--half-letter-height) calc(-1 * var(--half-letter-height));
+    }
+
+    &.right::before {
+      translate: calc(var(--half-letter-height) + var(--half-gap));
+      height: var(--connector-width);
+      width: var(--letter-height);
+    }
+
+    &.bottomRight::before {
+      width: var(--connector-width);
+      height: var(--diagonal-connector-length);
+      rotate: -45deg;
+      translate: var(--half-letter-height) var(--half-letter-height);
+    }
+
+    &.bottom::before {
+      bottom: -24px;
+      width: var(--connector-width);
+      height: 24px;
+    }
+
+    &.bottomLeft::before {
+      width: var(--connector-width);
+      height: var(--diagonal-connector-length);
+      rotate: 45deg;
+      translate: calc(-1 * var(--half-letter-height)) var(--half-letter-height);
+    }
+
+    &.left::before {
+      translate: calc(-1 * (var(--half-letter-height) + var(--half-gap)));
+      height: var(--connector-width);
+      width: var(--letter-height);
+    }
+
+    &.topLeft::before {
+      width: var(--connector-width);
+      height: var(--diagonal-connector-length);
+      rotate: -45deg;
+      translate: calc(-1 * var(--half-letter-height))
+        calc(-1 * var(--half-letter-height));
+    }
+  }
+}
