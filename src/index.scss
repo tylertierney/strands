@@ -1,0 +1,120 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  --letter-gap: 8px;
+  --half-gap: calc(var(--letter-gap) / 2);
+  --letter-height: 44px;
+  --half-letter-height: calc(var(--letter-height) / 2);
+  --connector-width: calc(var(--letter-height) / 3.5);
+  --diagonal-connector-length: calc(
+    calc(var(--letter-height) + var(--letter-gap)) * sqrt(2)
+  );
+
+  --text-color: rgb(241, 241, 241);
+  --bg-color: rgb(31, 35, 46);
+  --current-strand: rgb(20, 76, 112);
+
+  &.light-theme {
+    --text-color: rgb(19, 19, 19);
+    --bg-color: white;
+    --current-strand: rgb(204, 212, 231);
+  }
+}
+body {
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid {
+  display: grid;
+  user-select: none;
+  gap: var(--letter-gap);
+  align-self: center;
+
+  .letter {
+    width: 44px;
+    height: 44px;
+    border-radius: 100%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-size: 26px;
+    line-height: 70%;
+    font-family: monospace;
+  }
+
+  .letter.connector {
+    &::before {
+      content: '';
+      position: absolute;
+      background-color: var(--current-strand);
+      z-index: -1;
+    }
+
+    &.top::before {
+      top: calc(-1 * var(--half-letter-height));
+      width: var(--connector-width);
+      height: var(--letter-height);
+    }
+
+    &.topRight::before {
+      width: var(--connector-width);
+      height: var(--diagonal-connector-length);
+      rotate: 45deg;
+      translate: var(--half-letter-height) calc(-1 * var(--half-letter-height));
+    }
+
+    &.right::before {
+      translate: calc(var(--half-letter-height) + var(--half-gap));
+      height: var(--connector-width);
+      width: var(--letter-height);
+    }
+
+    &.bottomRight::before {
+      width: var(--connector-width);
+      height: var(--diagonal-connector-length);
+      rotate: -45deg;
+      translate: var(--half-letter-height) var(--half-letter-height);
+    }
+
+    &.bottom::before {
+      bottom: -24px;
+      width: var(--connector-width);
+      height: 24px;
+    }
+
+    &.bottomLeft::before {
+      width: var(--connector-width);
+      height: var(--diagonal-connector-length);
+      rotate: 45deg;
+      translate: calc(-1 * var(--half-letter-height)) var(--half-letter-height);
+    }
+
+    &.left::before {
+      translate: calc(-1 * (var(--half-letter-height) + var(--half-gap)));
+      height: var(--connector-width);
+      width: var(--letter-height);
+    }
+
+    &.topLeft::before {
+      width: var(--connector-width);
+      height: var(--diagonal-connector-length);
+      rotate: -45deg;
+      translate: calc(-1 * var(--half-letter-height))
+        calc(-1 * var(--half-letter-height));
+    }
+  }
+}

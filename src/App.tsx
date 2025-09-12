@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import './App.css'
 import { data } from './data'
+import { sunIcon } from './svg/sun'
+import Navbar from './components/Navbar/Navbar'
 
 type Coords = [number, number]
 
@@ -13,11 +15,7 @@ const getWordFromStrand = ({
   strand: Strand
   rows: Array<string>
 }) => {
-  let res = ''
-  strand.forEach(([r, c]) => {
-    res += rows[r][c]
-  })
-  return res
+  return strand.reduce((acc, [r, c]) => acc + rows[r][c], '')
 }
 
 type ConnectorPosition =
@@ -35,7 +33,6 @@ const getConnectorPosition = (
   start: Coords,
   end: Coords
 ): ConnectorPosition => {
-  console.log(end)
   // position is applied to "start" coords
 
   const startR = start[0]
@@ -46,13 +43,13 @@ const getConnectorPosition = (
 
   if (startR < endR) {
     if (startC < endC) {
-      return 'bottomLeft'
+      return 'bottomRight'
     }
     if (startC === endC) {
       return 'bottom'
     }
     if (startC > endC) {
-      return 'bottomRight'
+      return 'bottomLeft'
     }
   }
 
@@ -74,7 +71,7 @@ const getConnectorPosition = (
     }
 
     if (startC === endC) {
-      return 'right'
+      return 'top'
     }
 
     if (startC > endC) {
@@ -87,12 +84,6 @@ const getConnectorPosition = (
 
 const getConnectorPositions = (strand: Strand, idx: number) => {
   if (strand.length <= 1) return ''
-  // if (idx === 0) {
-  //   return `${getConnectorPosition(strand[idx], strand[idx + 1])}`;
-  // }
-  // if (idx === strand.length - 1) {
-  //   return `${getConnectorPosition(strand[idx], strand[idx - 1])}`;
-  // }
   if (idx === 0) return ''
 
   return getConnectorPosition(strand[idx], strand[idx - 1])
@@ -127,8 +118,15 @@ function App() {
     setCurrentStrand((prev) => [...prev, [row, col]])
   }
 
+  const currentWord = getWordFromStrand({
+    strand: currentStrand,
+    rows: data.startingBoard,
+  })
+
   return (
     <>
+      <Navbar />
+      <span style={{ minHeight: '1.5rem' }}>{currentWord ?? ' '}</span>
       <div
         className="grid"
         style={{
@@ -159,20 +157,23 @@ function App() {
 
           const inCurrentStrand = idxInCurrentStrand > -1
 
+          const classes = inCurrentStrand
+            ? `connector ${getConnectorPositions(
+                currentStrand,
+                idxInCurrentStrand
+              )}`
+            : ''
+
           return (
             <div
               className={`
                 letter 
-                ${
-                  inCurrentStrand
-                    ? 'connector' +
-                      ' ' +
-                      getConnectorPositions(currentStrand, idxInCurrentStrand)
-                    : ''
-                } `}
+                ${classes} `}
               key={idx}
               style={{
-                backgroundColor: inCurrentStrand ? 'pink' : 'unset',
+                backgroundColor: inCurrentStrand
+                  ? 'var(--current-strand)'
+                  : 'unset',
               }}
               onMouseDown={() => {
                 setDragging(true)
@@ -183,6 +184,9 @@ function App() {
               }}
             >
               {letter}
+              {/* <span>
+                {getConnectorPositions(currentStrand, idxInCurrentStrand)}
+              </span> */}
             </div>
           )
         })}
