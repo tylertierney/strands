@@ -1,5 +1,4 @@
-export type Coords = [number, number]
-export type Strand = Array<Coords>
+import type { Coords, Strand } from './models/models'
 
 export const getWordFromStrand = ({
   strand,
@@ -107,4 +106,10 @@ export const matchStrands = (a: Strand, b: Strand): boolean => {
 export const isCoordInStrand = (row: number, col: number, strand: Strand) => {
   const idx = strand.findIndex(([r, c]) => r === row && c === col)
   return idx > -1
+}
+
+export const constructDateFromString = (str: string): Date => {
+  const [year, month, day] = str.split('-').map(Number)
+  const correctDate = new Date(year, month - 1, day)
+  return correctDate
 }

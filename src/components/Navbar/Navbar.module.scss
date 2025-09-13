@@ -9,6 +9,9 @@
   .logo {
     font-size: 1.25rem;
     font-family: 'Courier New', Courier, monospace;
+    text-decoration: none;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--text-color);
   }
 
   .themeButton {

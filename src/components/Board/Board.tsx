@@ -1,14 +1,13 @@
 import styles from './Board.module.scss'
 import { useEffect, useState } from 'react'
-import { data } from '../../data'
 import {
   coordIsDetached,
   flattenArrayOfStrings,
   getWordFromStrand,
   isCoordInStrand,
-  type Strand,
 } from '../../utils'
 import Letter, { type StrandType } from './Letter/Letter'
+import type { Strand } from '../../models/models'
 
 export interface DrawEvent {
   word: string
@@ -36,7 +35,7 @@ export default function Board({
   const width = rows[0].length
   const height = rows.length
 
-  const letters = flattenArrayOfStrings(data.startingBoard)
+  const letters = flattenArrayOfStrings(rows)
 
   const mouseEnter = (strand: Strand, row: number, col: number) => {
     if (!dragging) return
@@ -80,6 +79,7 @@ export default function Board({
       style={{
         gridTemplateRows: `repeat(${height}, 1fr)`,
         gridTemplateColumns: `repeat(${width}, 1fr)`,
+        touchAction: 'none',
       }}
       onMouseLeave={() => {
         setDragging(false)
@@ -97,18 +97,6 @@ export default function Board({
       {letters.map((letter, idx) => {
         const row = ~~(idx / width)
         const col = idx % width
-
-        // const idxInCurrentStrand = currentStrand.findIndex(
-        //   ([r, c]) => r === row && c === col
-        // )
-
-        // const inCurrentStrand = idxInCurrentStrand > -1
-
-        // const classes = inCurrentStrand
-        //   ? `${styles.connector} ${
-        //       styles[getConnectorPositions(currentStrand, idxInCurrentStrand)]
-        //     }`
-        //   : ''
 
         let strand: Strand | undefined = undefined
         let strandType: StrandType = undefined
@@ -140,9 +128,15 @@ export default function Board({
             onMouseDown={() => {
               setDragging(true)
               setCurrentStrand([[row, col]])
-              console.log(strandType)
+            }}
+            onPointerDown={() => {
+              setDragging(true)
+              setCurrentStrand([[row, col]])
             }}
             onMouseEnter={() => {
+              mouseEnter(currentStrand, row, col)
+            }}
+            onPointerEnter={() => {
               mouseEnter(currentStrand, row, col)
             }}
             strandType={strandType}

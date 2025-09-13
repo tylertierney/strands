@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes, PropsWithChildren } from 'react'
-import { getConnectorPositions, type Strand } from '../../../utils'
+import { type Strand } from '../../../models/models'
+import { getConnectorPositions } from '../../../utils'
 import styles from './Letter.module.scss'
 
 export type StrandType = undefined | 'themeWord' | 'spangram' | 'currentStrand'
@@ -30,12 +31,6 @@ export default function Letter({
   const idxInStrand = strand.findIndex(([r, c]) => r === row && c === col)
 
   const inStrand = idxInStrand > -1
-
-  if (row === 4 && col === 0) {
-    console.log(children)
-    console.log(idxInStrand)
-    console.log(styles[strandType || ''])
-  }
 
   const classes = inStrand
     ? `${styles.connector} 
