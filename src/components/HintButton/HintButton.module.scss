@@ -36,7 +36,6 @@
     border: 2px solid var(--text-color);
     top: 0;
     left: 0;
-    // clip-path: inset(0px 66.6667% 0px 0px);
 
     &::after {
       content: '';
@@ -44,7 +43,7 @@
       height: 85%;
       width: 90%;
       border-radius: 90px;
-      background: color-mix(in hsl, var(--text-color) 30%, transparent);
+      background: color-mix(in hsl, var(--text-color) 20%, transparent);
     }
   }
 }

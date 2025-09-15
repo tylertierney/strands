@@ -1,13 +1,13 @@
-import styles from './Board.module.scss'
 import { useEffect, useState } from 'react'
+import type { Strand } from '../../models/models'
 import {
   coordIsDetached,
   flattenArrayOfStrings,
   getWordFromStrand,
   isCoordInStrand,
 } from '../../utils'
+import styles from './Board.module.scss'
 import Letter, { type StrandType } from './Letter/Letter'
-import type { Strand } from '../../models/models'
 
 export interface DrawEvent {
   word: string
@@ -37,9 +37,7 @@ export default function Board({
 
   const letters = flattenArrayOfStrings(rows)
 
-  const mouseEnter = (strand: Strand, row: number, col: number) => {
-    if (!dragging) return
-
+  const selectLetter = (strand: Strand, row: number, col: number) => {
     if (coordIsDetached(strand, row, col)) return
 
     const coordAlreadyInStrand = strand.findIndex(
@@ -74,77 +72,94 @@ export default function Board({
   }, [currentStrand, onDraw, rows])
 
   return (
-    <div
-      className={styles.grid}
-      style={{
-        gridTemplateRows: `repeat(${height}, 1fr)`,
-        gridTemplateColumns: `repeat(${width}, 1fr)`,
-        touchAction: 'none',
-      }}
-      onMouseLeave={() => {
-        setDragging(false)
-        setCurrentStrand([])
-      }}
-      onMouseUp={() => {
-        onConfirm?.({
-          word: getWordFromStrand({ strand: currentStrand, rows }),
-          strand: currentStrand,
-        })
-        setDragging(false)
-        setCurrentStrand([])
-      }}
-    >
-      {letters.map((letter, idx) => {
-        const row = ~~(idx / width)
-        const col = idx % width
+    <div style={{ touchAction: 'none' }}>
+      <div
+        className={styles.grid}
+        style={{
+          gridTemplateRows: `repeat(${height}, 1fr)`,
+          gridTemplateColumns: `repeat(${width}, 1fr)`,
+        }}
+        onPointerLeave={() => {
+          setDragging(false)
+          setCurrentStrand([])
+        }}
+        onPointerUp={() => {
+          onConfirm?.({
+            word: getWordFromStrand({ strand: currentStrand, rows }),
+            strand: currentStrand,
+          })
 
-        let strand: Strand | undefined = undefined
-        let strandType: StrandType = undefined
+          setDragging(false)
+          setCurrentStrand([])
+        }}
+      >
+        {letters.map((letter, idx) => {
+          const row = ~~(idx / width)
+          const col = idx % width
 
-        for (const themeWordStrand of foundThemeStrands) {
-          if (isCoordInStrand(row, col, themeWordStrand)) {
-            strandType = 'themeWord'
-            strand = themeWordStrand
-            break
+          let strand: Strand | undefined = undefined
+          let strandType: StrandType = undefined
+
+          for (const themeWordStrand of foundThemeStrands) {
+            if (isCoordInStrand(row, col, themeWordStrand)) {
+              strandType = 'themeWord'
+              strand = themeWordStrand
+              break
+            }
           }
-        }
 
-        if (isCoordInStrand(row, col, foundSpangram)) {
-          strandType = 'spangram'
-          strand = foundSpangram
-        }
+          if (isCoordInStrand(row, col, foundSpangram)) {
+            strandType = 'spangram'
+            strand = foundSpangram
+          }
 
-        if (isCoordInStrand(row, col, currentStrand)) {
-          strandType = 'currentStrand'
-          strand = currentStrand
-        }
+          if (isCoordInStrand(row, col, currentStrand)) {
+            strandType = 'currentStrand'
+            strand = currentStrand
+          }
 
-        return (
-          <Letter
-            key={row * width + col}
-            row={row}
-            col={col}
-            strand={strand}
-            onMouseDown={() => {
-              setDragging(true)
-              setCurrentStrand([[row, col]])
-            }}
-            onPointerDown={() => {
-              setDragging(true)
-              setCurrentStrand([[row, col]])
-            }}
-            onMouseEnter={() => {
-              mouseEnter(currentStrand, row, col)
-            }}
-            onPointerEnter={() => {
-              mouseEnter(currentStrand, row, col)
-            }}
-            strandType={strandType}
-          >
-            {letter}
-          </Letter>
-        )
-      })}
+          return (
+            <Letter
+              data-letter
+              data-row={row}
+              data-col={col}
+              key={row * width + col}
+              row={row}
+              col={col}
+              strand={strand}
+              onClick={() => {
+                selectLetter(currentStrand, row, col)
+              }}
+              onPointerDown={(e) => {
+                e.preventDefault()
+                setDragging(true)
+                setCurrentStrand([[row, col]])
+              }}
+              onPointerEnter={() => {
+                if (!dragging) return
+                selectLetter(currentStrand, row, col)
+              }}
+              onPointerMove={(e) => {
+                if (e.pointerType === 'touch' && e.buttons === 1) {
+                  const x = e.clientX
+                  const y = e.clientY
+                  const el = document.elementFromPoint(
+                    x,
+                    y
+                  ) as HTMLButtonElement
+                  if (!el || !el.dataset.letter) return
+                  const r = parseInt(el.dataset.row ?? '', 10)
+                  const c = parseInt(el.dataset.col ?? '', 10)
+                  selectLetter(currentStrand, r, c)
+                }
+              }}
+              strandType={strandType}
+            >
+              {letter}
+            </Letter>
+          )
+        })}
+      </div>
     </div>
   )
 }

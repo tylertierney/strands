@@ -13,6 +13,7 @@
   border: none;
   color: var(--text-color);
   background-color: transparent;
+  user-select: none;
 
   &.currentStrand {
     background-color: var(--current-strand);
@@ -27,8 +28,6 @@
   }
 
   &.connector {
-    // background-color: var(--current-strand);
-
     &::before {
       content: '';
       position: absolute;

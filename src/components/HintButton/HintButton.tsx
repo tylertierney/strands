@@ -11,8 +11,6 @@ export default function HintButton({
   ...rest
 }: PropsWithChildren<Props>) {
   const clipPath = `inset(0px ${100 - percentage}% 0px 0px)`
-  // const clipPath = `inset(0px % 0px 0px)`
-  // const clipPath = `polygon(0 0, 0 ${percentage}%, ${percentage}% 100%, 0 100%)`
 
   return (
     <button className={styles.button} {...rest}>

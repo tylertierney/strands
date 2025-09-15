@@ -26,10 +26,7 @@ const router = createBrowserRouter([
           const games = gamesArr as unknown as Game[]
           const asNumber = parseInt(params.gameId ?? '0', 10)
           const found = games.find(({ id }) => id === asNumber) ?? null
-          console.log(games)
-          console.log(found)
           return found
-          // return games[0]
         },
       },
     ],
