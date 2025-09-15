@@ -1,5 +1,5 @@
 import { useLoaderData } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { type Game, type Strand } from '../../models/models'
 import { matchStrands } from '../../utils'
 import Board, { type DrawEvent } from '../Board/Board'
@@ -12,47 +12,47 @@ const grayedOutText = 'color-mix(in hsl, var(--text-color) 80%, transparent)'
 interface FoundWords {
   themeWords: string[]
   spangram: string
-  other: Set<string>
+  other: string[]
 }
 
-interface Result {
+interface Display {
   color: string
   animation: string
-  result: string
+  text: string
 }
 
 export default function GamePage() {
-  const { startingBoard, clue, themeCoords, spangramCoords, solutions } =
+  const { startingBoard, clue, themeCoords, spangramCoords, solutions, id } =
     useLoaderData() as Game
   const [currentWord, setCurrentWord] = useState('')
   const [foundWords, setFoundWords] = useState<FoundWords>({
     themeWords: [],
     spangram: '',
-    other: new Set<string>(),
+    other: [],
   })
-  const [result, setResult] = useState<Result>({
-    result: '',
+  const [display, setDisplay] = useState<Display>({
+    text: '',
     animation: '',
     color: '',
   })
 
-  const setResultAfterTimeout = (res: Result) => {
+  const setDisplayAfterTimeout = (res: Display) => {
     setTimeout(() => {
-      setResult(res)
+      setDisplay(res)
     }, 500)
   }
 
   const handleConfirm = (e: DrawEvent) => {
     // check length
     if (e.word.length <= 3) {
-      setResult({
-        result: 'Too short',
+      setDisplay({
+        text: 'Too short',
         animation: styles.shake,
         color: '',
       })
 
-      setResultAfterTimeout({
-        result: 'Too short',
+      setDisplayAfterTimeout({
+        text: 'Too short',
         animation: '',
         color: grayedOutText,
       })
@@ -64,23 +64,28 @@ export default function GamePage() {
     for (const themeWord in themeCoords) {
       if (matchStrands(e.strand, themeCoords[themeWord])) {
         if (foundWords.themeWords.includes(themeWord)) {
-          setResultAfterTimeout({
-            result: 'Already found',
+          setDisplayAfterTimeout({
+            text: 'Already found',
             animation: styles.shake,
             color: grayedOutText,
           })
           return
         }
 
-        setResult({
-          result: themeWord,
+        setDisplay({
+          text: themeWord,
           animation: styles.bounce,
           color: 'var(--readable-theme-word)',
         })
-        setFoundWords((prev) => ({
-          ...prev,
-          themeWords: [...prev.themeWords, themeWord],
-        }))
+        const newFoundWords: FoundWords = {
+          ...foundWords,
+          themeWords: [...foundWords.themeWords, themeWord],
+        }
+        setFoundWords(newFoundWords)
+        localStorage.setItem(
+          `strings-state-${id}`,
+          JSON.stringify(newFoundWords)
+        )
         return
       }
     }
@@ -88,16 +93,16 @@ export default function GamePage() {
     // check spangram
     if (matchStrands(e.strand, spangramCoords)) {
       if (foundWords.spangram === e.word) {
-        setResultAfterTimeout({
-          result: 'Already found',
+        setDisplayAfterTimeout({
+          text: 'Already found',
           animation: styles.shake,
           color: grayedOutText,
         })
         return
       }
 
-      setResult({
-        result: e.word,
+      setDisplay({
+        text: e.word,
         animation: styles.bounce,
         color: 'var(--spangram)',
       })
@@ -109,9 +114,9 @@ export default function GamePage() {
     }
 
     // check already found
-    if (foundWords.other.has(e.word)) {
-      setResult({
-        result: 'Already found',
+    if (foundWords.other.includes(e.word)) {
+      setDisplay({
+        text: 'Already found',
         animation: styles.shake,
         color: grayedOutText,
       })
@@ -121,27 +126,35 @@ export default function GamePage() {
 
     // check solutions
     if (solutions.includes(e.word)) {
-      setResult({
-        result: e.word,
+      setDisplay({
+        text: e.word,
         animation: styles.bounce,
         color: grayedOutText,
       })
 
       setFoundWords((prev) => ({
         ...prev,
-        other: new Set([...prev.other, e.word]),
+        other: [...prev.other, e.word],
       }))
 
       return
     }
 
     // not a word
-    setResult({
-      result: 'Not in word list',
+    setDisplay({
+      text: 'Not in word list',
       animation: styles.shake,
       color: grayedOutText,
     })
   }
+
+  useEffect(() => {
+    const foundWordsFromLocal = localStorage.getItem(`strings-state-${id}`)
+    if (foundWordsFromLocal) {
+      const parsed = JSON.parse(foundWordsFromLocal) as FoundWords
+      setFoundWords(parsed)
+    }
+  }, [id])
 
   const foundThemeStrands: Strand[] = foundWords.themeWords.map(
     (themeWord) => themeCoords[themeWord]
@@ -154,16 +167,16 @@ export default function GamePage() {
       <div className={styles.content}>
         <Clue clue={clue} />
         {currentWord ? (
-          <span className={styles.result}>{currentWord}</span>
+          <span className={styles.display}>{currentWord}</span>
         ) : (
           <span
             className={`
-          ${styles.result}
-          ${result.animation}
+          ${styles.display}
+          ${display.animation}
           `}
-            style={{ color: result.color }}
+            style={{ color: display.color }}
           >
-            {result.result}
+            {display.text}
           </span>
         )}
         <Board
@@ -182,6 +195,14 @@ export default function GamePage() {
             {Object.keys(themeCoords).length + 1} theme words found.
           </span>
         </div>
+        <button
+          onClick={() => {
+            setFoundWords({ other: [], spangram: '', themeWords: [] })
+            localStorage.removeItem(`strings-state-${id}`)
+          }}
+        >
+          Reset?
+        </button>
       </div>
     </>
   )

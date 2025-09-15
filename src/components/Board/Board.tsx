@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type PointerEvent } from 'react'
 import type { Strand } from '../../models/models'
 import {
-  coordIsDetached,
+  coordIsDetachedFromEnd,
   flattenArrayOfStrings,
   getWordFromStrand,
   isCoordInStrand,
@@ -29,7 +29,6 @@ export default function Board({
   foundThemeStrands,
   foundSpangram,
 }: Props) {
-  const [dragging, setDragging] = useState(false)
   const [currentStrand, setCurrentStrand] = useState<Strand>([])
 
   const width = rows[0].length
@@ -38,7 +37,12 @@ export default function Board({
   const letters = flattenArrayOfStrings(rows)
 
   const selectLetter = (strand: Strand, row: number, col: number) => {
-    if (coordIsDetached(strand, row, col)) return
+    if (draggingFrom) {
+      if (coordIsDetachedFromEnd(strand, row, col)) {
+        setCurrentStrand([])
+        return
+      }
+    }
 
     const coordAlreadyInStrand = strand.findIndex(
       ([r, c]) => r === row && c === col
@@ -71,6 +75,67 @@ export default function Board({
     })
   }, [currentStrand, onDraw, rows])
 
+  const getCoordsFromPointerEvent = (
+    e: PointerEvent<HTMLDivElement | HTMLButtonElement>
+  ): [number, number] | null => {
+    const x = e.clientX
+    const y = e.clientY
+    const el = document.elementFromPoint(x, y) as HTMLButtonElement
+    if (!el || !el.dataset.letter) return null
+    const r = parseInt(el.dataset.row ?? '', 10)
+    const c = parseInt(el.dataset.col ?? '', 10)
+    return [r, c]
+  }
+
+  const onPointerMove = (e: PointerEvent<HTMLDivElement>) => {
+    if ((e.pointerType === 'touch' && e.buttons === 1) || draggingFrom) {
+      const coords = getCoordsFromPointerEvent(e)
+      if (!coords) return
+      const [r, c] = coords
+      selectLetter(currentStrand, r, c)
+    }
+  }
+
+  const onPointerUp = (e: PointerEvent<HTMLDivElement>) => {
+    const coords = getCoordsFromPointerEvent(e)
+    if (!coords) return
+    const [row, col] = coords
+
+    console.log(coords)
+
+    const hasDraggedFromAnotherNode =
+      draggingFrom?.row !== row || draggingFrom?.col !== col
+
+    if (hasDraggedFromAnotherNode) {
+      console.log('draggedFromAnotherNode')
+      onConfirm?.({
+        word: getWordFromStrand({ strand: currentStrand, rows }),
+        strand: currentStrand,
+      })
+      setCurrentStrand([])
+    } else {
+      if (
+        currentStrand.at(-1)?.[0] === row &&
+        currentStrand.at(-1)?.[1] === col
+      ) {
+        onConfirm?.({
+          word: getWordFromStrand({ strand: currentStrand, rows }),
+          strand: currentStrand,
+        })
+        setCurrentStrand([])
+      } else {
+        selectLetter(currentStrand, row, col)
+      }
+    }
+
+    setDraggingFrom(null)
+  }
+
+  const [draggingFrom, setDraggingFrom] = useState<{
+    row: number
+    col: number
+  } | null>(null)
+
   return (
     <div style={{ touchAction: 'none' }}>
       <div
@@ -80,18 +145,10 @@ export default function Board({
           gridTemplateColumns: `repeat(${width}, 1fr)`,
         }}
         onPointerLeave={() => {
-          setDragging(false)
-          setCurrentStrand([])
+          setDraggingFrom(null)
         }}
-        onPointerUp={() => {
-          onConfirm?.({
-            word: getWordFromStrand({ strand: currentStrand, rows }),
-            strand: currentStrand,
-          })
-
-          setDragging(false)
-          setCurrentStrand([])
-        }}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
       >
         {letters.map((letter, idx) => {
           const row = ~~(idx / width)
@@ -127,31 +184,13 @@ export default function Board({
               row={row}
               col={col}
               strand={strand}
-              onClick={() => {
-                selectLetter(currentStrand, row, col)
-              }}
-              onPointerDown={(e) => {
-                e.preventDefault()
-                setDragging(true)
-                setCurrentStrand([[row, col]])
-              }}
-              onPointerEnter={() => {
-                if (!dragging) return
-                selectLetter(currentStrand, row, col)
-              }}
-              onPointerMove={(e) => {
-                if (e.pointerType === 'touch' && e.buttons === 1) {
-                  const x = e.clientX
-                  const y = e.clientY
-                  const el = document.elementFromPoint(
-                    x,
-                    y
-                  ) as HTMLButtonElement
-                  if (!el || !el.dataset.letter) return
-                  const r = parseInt(el.dataset.row ?? '', 10)
-                  const c = parseInt(el.dataset.col ?? '', 10)
-                  selectLetter(currentStrand, r, c)
-                }
+              // onClick={() => {
+              //   selectLetter(currentStrand, row, col)
+              // }}
+              onPointerDown={() => {
+                // setDragging(true)
+                setDraggingFrom({ row, col })
+                // selectLetter(currentStrand, row, col)
               }}
               strandType={strandType}
             >

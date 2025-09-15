@@ -85,7 +85,11 @@ export const flattenArrayOfStrings = (arr: string[]): string[] => {
   return arr.flatMap((str) => str.split(''))
 }
 
-export const coordIsDetached = (strand: Strand, row: number, col: number) => {
+export const coordIsDetachedFromEnd = (
+  strand: Strand,
+  row: number,
+  col: number
+) => {
   if (!strand.length) return false
 
   const [endR, endC] = strand.at(-1) as Coords
