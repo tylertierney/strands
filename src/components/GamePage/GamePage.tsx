@@ -9,7 +9,7 @@ import styles from './GamePage.module.scss'
 
 const grayedOutText = 'color-mix(in hsl, var(--text-color) 80%, transparent)'
 
-interface FoundWords {
+export interface FoundWords {
   themeWords: string[]
   spangram: string
   other: string[]
