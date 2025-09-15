@@ -184,13 +184,8 @@ export default function Board({
               row={row}
               col={col}
               strand={strand}
-              // onClick={() => {
-              //   selectLetter(currentStrand, row, col)
-              // }}
               onPointerDown={() => {
-                // setDragging(true)
                 setDraggingFrom({ row, col })
-                // selectLetter(currentStrand, row, col)
               }}
               strandType={strandType}
             >

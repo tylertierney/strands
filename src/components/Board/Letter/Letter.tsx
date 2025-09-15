@@ -33,9 +33,10 @@ export default function Letter({
   const inStrand = idxInStrand > -1
 
   const classes = inStrand
-    ? `${styles.connector} 
+    ? `${styles.highlighted} 
       ${styles[getConnectorPositions(strand, idxInStrand)]}
-      ${strandType ? styles[strandType] : ''}`
+      ${strandType ? styles[strandType] : ''}
+      ${idxInStrand === strand.length - 1 ? styles.endOfStrand : ''}`
     : ''
 
   return (

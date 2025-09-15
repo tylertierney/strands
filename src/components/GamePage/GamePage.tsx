@@ -13,6 +13,7 @@ export interface FoundWords {
   themeWords: string[]
   spangram: string
   other: string[]
+  hintsUsed: number
 }
 
 interface Display {
@@ -29,6 +30,7 @@ export default function GamePage() {
     themeWords: [],
     spangram: '',
     other: [],
+    hintsUsed: 0,
   })
   const [display, setDisplay] = useState<Display>({
     text: '',
@@ -106,10 +108,12 @@ export default function GamePage() {
         animation: styles.bounce,
         color: 'var(--spangram)',
       })
-      setFoundWords((prev) => ({
-        ...prev,
+      const newFoundWords: FoundWords = {
+        ...foundWords,
         spangram: e.word,
-      }))
+      }
+      setFoundWords(newFoundWords)
+      localStorage.setItem(`strings-state-${id}`, JSON.stringify(newFoundWords))
       return
     }
 
@@ -132,10 +136,13 @@ export default function GamePage() {
         color: grayedOutText,
       })
 
-      setFoundWords((prev) => ({
-        ...prev,
-        other: [...prev.other, e.word],
-      }))
+      const newFoundWords: FoundWords = {
+        ...foundWords,
+        other: [...foundWords.other, e.word],
+      }
+
+      setFoundWords(newFoundWords)
+      localStorage.setItem(`strings-state-${id}`, JSON.stringify(newFoundWords))
 
       return
     }
@@ -160,6 +167,12 @@ export default function GamePage() {
     (themeWord) => themeCoords[themeWord]
   )
   const foundSpangram: Strand = foundWords.spangram ? spangramCoords : []
+
+  const hintPercentage = Math.ceil(
+    ((foundWords.other.length - foundWords.hintsUsed * 3) / 3) * 100
+  )
+
+  console.log(hintPercentage)
 
   return (
     <>
@@ -189,7 +202,18 @@ export default function GamePage() {
           foundSpangram={foundSpangram}
         />
         <div className={styles.boardFooter}>
-          <HintButton percentage={100}>Hint</HintButton>
+          <HintButton
+            percentage={hintPercentage}
+            onClick={() =>
+              setFoundWords((prev) => ({
+                ...prev,
+                hintsUsed: prev.hintsUsed + 1,
+              }))
+            }
+            disabled={hintPercentage < 100}
+          >
+            Hint
+          </HintButton>
           <span>
             {foundWords.themeWords.length + (foundSpangram.length ? 1 : 0)} of{' '}
             {Object.keys(themeCoords).length + 1} theme words found.
@@ -197,7 +221,12 @@ export default function GamePage() {
         </div>
         <button
           onClick={() => {
-            setFoundWords({ other: [], spangram: '', themeWords: [] })
+            setFoundWords({
+              other: [],
+              spangram: '',
+              themeWords: [],
+              hintsUsed: 0,
+            })
             localStorage.removeItem(`strings-state-${id}`)
           }}
         >

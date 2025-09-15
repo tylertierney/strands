@@ -17,6 +17,22 @@
 
   &.currentStrand {
     background-color: var(--current-strand);
+
+    &.endOfStrand {
+      animation: nodeBounce 4s ease-in-out 1 forwards;
+    }
+
+    &.endOfStrand::after {
+      position: absolute;
+      content: '';
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      border-radius: 50%;
+      animation: 5s ease-in-out infinite forwards pulsingOutline alternate;
+      outline-color: var(--current-strand);
+    }
   }
 
   &.themeWord {
@@ -27,7 +43,9 @@
     background-color: var(--spangram);
   }
 
-  &.connector {
+  &.highlighted {
+    animation: nodeBounce 4s ease-in-out 1 forwards;
+
     &::before {
       content: '';
       position: absolute;
@@ -36,9 +54,9 @@
     }
 
     &.top::before {
-      top: calc(-1 * var(--half-letter-height));
+      top: calc(-1 * var(--half-letter-height) + 4px);
       width: var(--connector-width);
-      height: var(--letter-height);
+      height: var(--half-letter-height);
     }
 
     &.topRight::before {
@@ -51,7 +69,7 @@
     &.right::before {
       translate: calc(var(--half-letter-height) + var(--half-gap));
       height: var(--connector-width);
-      width: var(--letter-height);
+      width: calc(var(--letter-height) - 8px);
     }
 
     &.bottomRight::before {
@@ -62,9 +80,9 @@
     }
 
     &.bottom::before {
-      bottom: -24px;
+      bottom: calc(-1 * var(--half-letter-height));
       width: var(--connector-width);
-      height: 24px;
+      height: var(--letter-height);
     }
 
     &.bottomLeft::before {
@@ -75,9 +93,9 @@
     }
 
     &.left::before {
-      translate: calc(-1 * (var(--half-letter-height) + var(--half-gap)));
+      translate: calc(-1 * var(--half-letter-height));
       height: var(--connector-width);
-      width: var(--letter-height);
+      width: calc(var(--letter-height) - 8px);
     }
 
     &.topLeft::before {
@@ -87,5 +105,54 @@
       translate: calc(-1 * var(--half-letter-height))
         calc(-1 * var(--half-letter-height));
     }
+  }
+}
+
+@keyframes pulsingOutline {
+  30% {
+    outline-offset: 0px;
+    outline: 0px solid var(--current-strand);
+  }
+
+  33% {
+    outline-offset: 8px;
+    outline: 1px solid var(--current-strand);
+  }
+
+  35% {
+    outline-offset: 4px;
+    outline: 4px solid var(--current-strand);
+  }
+
+  40% {
+    outline-offset: 4px;
+    outline: 4px solid var(--current-strand);
+  }
+
+  100% {
+    outline-offset: 4px;
+    outline: 4px solid var(--current-strand);
+  }
+}
+
+@keyframes nodeBounce {
+  0% {
+    scale: 1;
+  }
+
+  5% {
+    scale: 0.9;
+  }
+
+  8% {
+    scale: 1.1;
+  }
+
+  10% {
+    scale: 1;
+  }
+
+  100% {
+    scale: 1;
   }
 }
