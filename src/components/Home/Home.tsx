@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import styles from './Home.module.scss'
-import { constructDateFromString } from '../../utils'
+import { constructDateFromString, isGameCompleted } from '../../utils'
 import games from '../../../games.json'
 import type { Game } from '../../models/models'
 import type { FoundWords } from '../GamePage/GamePage'
@@ -21,34 +21,27 @@ const checkmarkIcon = (
   </svg>
 )
 
-export default function Home() {
-  const userHasCompletedGame = (g: Game) => {
-    const fromLocalStorage = localStorage.getItem(
-      `strings-state-${String(g.id)}`
-    )
-    if (!fromLocalStorage) {
-      return false
-    }
-    const parsed = JSON.parse(fromLocalStorage) as FoundWords
-    if (
-      parsed.themeWords.length === g.themeWords.length &&
-      parsed.spangram === g.spangram
-    ) {
-      return true
-    }
-
-    return false
+const getFoundWordsFromLocalStorage = (g: Game): FoundWords | null => {
+  const fromLocalStorage = localStorage.getItem(`strings-state-${String(g.id)}`)
+  if (!fromLocalStorage) {
+    return null
   }
+  return JSON.parse(fromLocalStorage) as FoundWords
+}
 
+export default function Home() {
   return (
     <div className={styles.page}>
       <table className={styles.table}>
         <thead className={styles.thead}>
           <tr className={styles.tr}>
+            <th className={`${styles.th} ${styles.id}`} scope='col'>
+              ID
+            </th>
             <th className={styles.th} scope='col'>
               Date
             </th>
-            <th className={`${styles.th} ${styles.checkmarkCell}`} scope='col'>
+            <th className={`${styles.th} ${styles.completed}`} scope='col'>
               Completed
             </th>
             <th className={styles.th} scope='col'>
@@ -62,10 +55,11 @@ export default function Home() {
 
             return (
               <tr key={i} className={styles.tr}>
+                <td className={`${styles.td} ${styles.id}`}>{game.index}</td>
                 <td className={styles.td}>
                   <Link
                     style={{ color: 'var(--text-color)' }}
-                    to={`/games/${game.id}`}
+                    to={`/games/${game.index}`}
                   >
                     {constructDateFromString(game.printDate).toLocaleDateString(
                       'en-us',
@@ -77,8 +71,10 @@ export default function Home() {
                     )}
                   </Link>
                 </td>
-                <td className={`${styles.td} ${styles.checkmarkCell}`}>
-                  {userHasCompletedGame(game) ? checkmarkIcon : ''}
+                <td className={`${styles.td} ${styles.completed}`}>
+                  {isGameCompleted(getFoundWordsFromLocalStorage(game), game)
+                    ? checkmarkIcon
+                    : ''}
                 </td>
                 <td className={styles.td}>{game.clue}</td>
               </tr>

@@ -21,6 +21,7 @@ interface Props {
   foundThemeStrands: Strand[]
   foundSpangram: Strand
   hintStrand: Strand
+  disabled?: boolean
 }
 
 export default function Board({
@@ -30,6 +31,7 @@ export default function Board({
   foundThemeStrands,
   foundSpangram,
   hintStrand,
+  disabled = false,
 }: Props) {
   const [currentStrand, setCurrentStrand] = useState<Strand>([])
 
@@ -107,7 +109,6 @@ export default function Board({
       draggingFrom?.row !== row || draggingFrom?.col !== col
 
     if (hasDraggedFromAnotherNode) {
-      console.log('draggedFromAnotherNode')
       onConfirm?.({
         word: getWordFromStrand({ strand: currentStrand, rows }),
         strand: currentStrand,
@@ -145,10 +146,11 @@ export default function Board({
           gridTemplateColumns: `repeat(${width}, 1fr)`,
         }}
         onPointerLeave={() => {
+          if (disabled) return
           setDraggingFrom(null)
         }}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
+        onPointerMove={disabled ? undefined : onPointerMove}
+        onPointerUp={disabled ? undefined : onPointerUp}
       >
         {letters.map((letter, idx) => {
           const row = ~~(idx / width)
@@ -193,6 +195,7 @@ export default function Board({
                 setDraggingFrom({ row, col })
               }}
               strandType={strandType}
+              disabled={disabled}
             >
               {letter}
             </Letter>

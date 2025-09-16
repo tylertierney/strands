@@ -15,6 +15,10 @@
   background-color: transparent;
   user-select: none;
 
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   &.currentStrand {
     background-color: var(--current-strand);
 
@@ -51,64 +55,65 @@
   &.highlighted {
     animation: nodeBounce 4s ease-in-out 1 forwards;
 
-    &::before {
-      content: '';
+    .connector {
       position: absolute;
       background-color: inherit;
       z-index: -1;
-    }
 
-    &.top::before {
-      top: calc(-1 * var(--half-letter-height) + 4px);
-      width: var(--connector-width);
-      height: var(--half-letter-height);
-    }
+      &.top {
+        top: calc(-1 * var(--half-letter-height) + 4px);
+        width: var(--connector-width);
+        height: var(--half-letter-height);
+      }
 
-    &.topRight::before {
-      width: var(--connector-width);
-      height: var(--diagonal-connector-length);
-      rotate: 45deg;
-      translate: var(--half-letter-height) calc(-1 * var(--half-letter-height));
-    }
+      &.topRight {
+        width: var(--connector-width);
+        height: var(--diagonal-connector-length);
+        rotate: 45deg;
+        translate: var(--half-letter-height)
+          calc(-1 * var(--half-letter-height));
+      }
 
-    &.right::before {
-      translate: calc(var(--half-letter-height) + var(--half-gap));
-      height: var(--connector-width);
-      width: calc(var(--letter-height) - 8px);
-    }
+      &.right {
+        translate: calc(var(--half-letter-height) + var(--half-gap));
+        height: var(--connector-width);
+        width: calc(var(--letter-height) - 8px);
+      }
 
-    &.bottomRight::before {
-      width: var(--connector-width);
-      height: var(--diagonal-connector-length);
-      rotate: -45deg;
-      translate: var(--half-letter-height) var(--half-letter-height);
-    }
+      &.bottomRight {
+        width: var(--connector-width);
+        height: var(--diagonal-connector-length);
+        rotate: -45deg;
+        translate: var(--half-letter-height) var(--half-letter-height);
+      }
 
-    &.bottom::before {
-      bottom: calc(-1 * var(--half-letter-height));
-      width: var(--connector-width);
-      height: var(--letter-height);
-    }
+      &.bottom {
+        bottom: calc(-1 * var(--half-letter-height));
+        width: var(--connector-width);
+        height: var(--letter-height);
+      }
 
-    &.bottomLeft::before {
-      width: var(--connector-width);
-      height: var(--diagonal-connector-length);
-      rotate: 45deg;
-      translate: calc(-1 * var(--half-letter-height)) var(--half-letter-height);
-    }
+      &.bottomLeft {
+        width: var(--connector-width);
+        height: var(--diagonal-connector-length);
+        rotate: 45deg;
+        translate: calc(-1 * var(--half-letter-height))
+          var(--half-letter-height);
+      }
 
-    &.left::before {
-      translate: calc(-1 * var(--half-letter-height));
-      height: var(--connector-width);
-      width: calc(var(--letter-height) - 8px);
-    }
+      &.left {
+        translate: calc(-1 * var(--half-letter-height));
+        height: var(--connector-width);
+        width: calc(var(--letter-height) - 8px);
+      }
 
-    &.topLeft::before {
-      width: var(--connector-width);
-      height: var(--diagonal-connector-length);
-      rotate: -45deg;
-      translate: calc(-1 * var(--half-letter-height))
-        calc(-1 * var(--half-letter-height));
+      &.topLeft {
+        width: var(--connector-width);
+        height: var(--diagonal-connector-length);
+        rotate: -45deg;
+        translate: calc(-1 * var(--half-letter-height))
+          calc(-1 * var(--half-letter-height));
+      }
     }
   }
 }

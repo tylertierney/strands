@@ -14,4 +14,5 @@ export interface Game {
   solutions: string[]
   themeCoords: Record<string, Strand>
   spangramCoords: Strand
+  index: number
 }

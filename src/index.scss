@@ -9,7 +9,7 @@ body {
   --half-letter-height: calc(var(--letter-height) / 2);
   --connector-width: calc(var(--letter-height) / 3.5);
   --diagonal-connector-length: calc(
-    calc(var(--letter-height) + var(--letter-gap)) * sqrt(2) - 8px
+    calc(var(--letter-height) + var(--letter-gap)) * sqrt(2) - 10px
   );
 
   --text-color: rgb(241, 241, 241);
@@ -17,8 +17,9 @@ body {
   --current-strand: rgb(79, 93, 102);
   --theme-word: rgb(20, 76, 112);
   --spangram: #c5a600;
+  --hint-button-bg: #9fe7a7a6;
 
-  --readable-theme-word: rgb(41, 139, 202);
+  --readable-theme-word: rgb(93, 184, 243);
 
   &.light-theme {
     --text-color: rgb(74, 73, 83);

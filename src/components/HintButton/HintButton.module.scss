@@ -41,13 +41,14 @@
     top: 0;
     left: 0;
 
-    &::after {
+    &::before {
       content: '';
       position: absolute;
       height: 85%;
       width: 90%;
       border-radius: 90px;
-      background: color-mix(in hsl, var(--text-color) 20%, transparent);
+      background: var(--hint-button-bg);
+      z-index: -1;
     }
   }
 }

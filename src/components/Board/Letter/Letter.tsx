@@ -38,8 +38,7 @@ export default function Letter({
   const inStrand = idxInStrand > -1
 
   const classes = inStrand
-    ? `${styles.highlighted} 
-      ${styles[getConnectorPositions(strand, idxInStrand)]}
+    ? `${styles.highlighted}
       ${strandType ? styles[strandType] : ''}
       ${idxInStrand === strand.length - 1 ? styles.endOfStrand : ''}`
     : ''
@@ -51,6 +50,13 @@ export default function Letter({
         ${classes}`}
       {...rest}
     >
+      {inStrand && (
+        <div
+          className={`${styles.connector} ${
+            styles[getConnectorPositions(strand, idxInStrand)]
+          }`}
+        ></div>
+      )}
       {children}
     </button>
   )

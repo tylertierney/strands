@@ -20,12 +20,12 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: 'games/:gameId',
+        path: 'games/:gameIndex',
         element: <GamePage />,
         loader: ({ params }) => {
           const games = gamesArr as unknown as Game[]
-          const asNumber = parseInt(params.gameId ?? '0', 10)
-          const found = games.find(({ id }) => id === asNumber) ?? null
+          const asNumber = parseInt(params.gameIndex ?? '0', 10)
+          const found = games.find(({ index }) => index === asNumber) ?? null
           return found
         },
       },

@@ -1,7 +1,7 @@
 import { Link, useLoaderData } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { type Game, type Strand } from '../../models/models'
-import { matchStrands } from '../../utils'
+import { isGameCompleted, matchStrands } from '../../utils'
 import Board, { type DrawEvent } from '../Board/Board'
 import Clue from '../Clue/Clue'
 import HintButton from '../HintButton/HintButton'
@@ -23,6 +23,7 @@ interface Display {
 }
 
 export default function GamePage() {
+  const game = useLoaderData() as Game
   const {
     startingBoard,
     clue,
@@ -31,7 +32,8 @@ export default function GamePage() {
     solutions,
     id,
     printDate,
-  } = useLoaderData() as Game
+  } = game
+
   const [currentWord, setCurrentWord] = useState('')
   const [foundWords, setFoundWords] = useState<FoundWords>({
     themeWords: [],
@@ -72,7 +74,10 @@ export default function GamePage() {
 
     // check themeWords
     for (const themeWord in themeCoords) {
-      if (matchStrands(e.strand, themeCoords[themeWord])) {
+      if (
+        matchStrands(e.strand, themeCoords[themeWord]) &&
+        e.word === themeWord
+      ) {
         if (foundWords.themeWords.includes(themeWord)) {
           setDisplayAfterTimeout({
             text: 'Already found',
@@ -196,6 +201,39 @@ export default function GamePage() {
     setHintStrand(strand)
   }
 
+  const getHintAndWordCount = (className: string) => (
+    <div className={`${styles.hintAndWordCount} ${className}`}>
+      <HintButton
+        percentage={hintPercentage}
+        onClick={handleHintClick}
+        disabled={hintPercentage < 100}
+      >
+        Hint
+      </HintButton>
+      <span>
+        {foundWords.themeWords.length + (foundSpangram.length ? 1 : 0)} of{' '}
+        {Object.keys(themeCoords).length + 1} theme words found.
+      </span>
+    </div>
+  )
+
+  const getResetButton = (className: string) => (
+    <button
+      className={`${styles.resetButton} ${className}`}
+      onClick={() => {
+        setFoundWords({
+          other: [],
+          spangram: '',
+          themeWords: [],
+          hintsUsed: 0,
+        })
+        localStorage.removeItem(`strings-state-${id}`)
+      }}
+    >
+      Reset?
+    </button>
+  )
+
   return (
     <>
       <div className={styles.header}>
@@ -216,56 +254,39 @@ export default function GamePage() {
         </div>
       </div>
       <div className={styles.content}>
-        <Clue clue={clue} />
-        {currentWord ? (
-          <span className={styles.display}>{currentWord}</span>
-        ) : (
-          <span
-            className={`
+        <div className={styles.gameInfo}>
+          <Clue className={styles.clue} clue={clue} />
+          {getHintAndWordCount(styles.showOnLargeScreen)}
+          {getResetButton(styles.showOnLargeScreen)}
+        </div>
+        <div>
+          {currentWord ? (
+            <span className={styles.display}>{currentWord}</span>
+          ) : (
+            <span
+              className={`
           ${styles.display}
           ${display.animation}
           `}
-            style={{ color: display.color }}
-          >
-            {display.text}
-          </span>
-        )}
-        <Board
-          rows={startingBoard}
-          onDraw={(e) => {
-            setCurrentWord(e.word)
-          }}
-          onConfirm={handleConfirm}
-          foundThemeStrands={foundThemeStrands}
-          foundSpangram={foundSpangram}
-          hintStrand={hintStrand}
-        />
-        <div className={styles.boardFooter}>
-          <HintButton
-            percentage={hintPercentage}
-            onClick={handleHintClick}
-            disabled={hintPercentage < 100}
-          >
-            Hint
-          </HintButton>
-          <span>
-            {foundWords.themeWords.length + (foundSpangram.length ? 1 : 0)} of{' '}
-            {Object.keys(themeCoords).length + 1} theme words found.
-          </span>
+              style={{ color: display.color }}
+            >
+              {display.text}
+            </span>
+          )}
+          <Board
+            rows={startingBoard}
+            onDraw={(e) => {
+              setCurrentWord(e.word)
+            }}
+            onConfirm={handleConfirm}
+            foundThemeStrands={foundThemeStrands}
+            foundSpangram={foundSpangram}
+            hintStrand={hintStrand}
+            disabled={isGameCompleted(foundWords, game)}
+          />
+          {getHintAndWordCount(styles.hideOnLargeScreen)}
         </div>
-        <button
-          onClick={() => {
-            setFoundWords({
-              other: [],
-              spangram: '',
-              themeWords: [],
-              hintsUsed: 0,
-            })
-            localStorage.removeItem(`strings-state-${id}`)
-          }}
-        >
-          Reset?
-        </button>
+        {getResetButton(styles.hideOnLargeScreen)}
       </div>
     </>
   )

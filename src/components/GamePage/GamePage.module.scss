@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   padding: 0 2rem 1rem 2rem;
+  margin-bottom: 2rem;
 
   .date {
     margin: 0rem 0 0.75rem 0;
@@ -36,6 +37,11 @@
   gap: 1rem;
   align-self: center;
 
+  .gameInfo {
+    display: flex;
+    flex-direction: column;
+  }
+
   .display {
     min-height: 2.5rem;
     font-weight: bold;
@@ -54,15 +60,41 @@
     }
   }
 
-  .boardFooter {
-    display: flex;
+  .hintAndWordCount {
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
+  }
+
+  .resetButton {
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    margin-bottom: 10rem;
+    font-size: 1rem;
+    cursor: pointer;
+    background: rgba(255, 98, 98, 0.4);
+    border: 2px solid rgb(255, 91, 91);
+    border-radius: 1rem;
+    color: var(--text-color);
+    opacity: 0.5;
+    transition: 0.2s ease-in-out;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 }
 
-@media only screen and (min-width: 800px) {
+.showOnLargeScreen {
+  display: none;
+}
+
+.hideOnLargeScreen {
+  display: flex;
+}
+
+@media only screen and (min-width: 768px) {
   .header {
     flex-direction: row;
     align-items: center;
@@ -75,6 +107,31 @@
     .gameLinks {
       gap: 1rem;
     }
+  }
+
+  .content {
+    flex-direction: row;
+    align-self: stretch;
+    justify-content: center;
+    gap: 8rem;
+
+    .gameInfo {
+      align-self: center;
+      gap: 1rem;
+      min-width: 320px;
+
+      .resetButton {
+        margin: 0;
+      }
+    }
+  }
+
+  .showOnLargeScreen {
+    display: flex;
+  }
+
+  .hideOnLargeScreen {
+    display: none;
   }
 }
 

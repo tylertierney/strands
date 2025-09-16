@@ -1,4 +1,5 @@
-import type { Coords, Strand } from './models/models'
+import type { FoundWords } from './components/GamePage/GamePage'
+import type { Coords, Game, Strand } from './models/models'
 
 export const getWordFromStrand = ({
   strand,
@@ -101,10 +102,21 @@ export const coordIsDetachedFromEnd = (
 }
 
 export const matchStrands = (a: Strand, b: Strand): boolean => {
+  if (!a.length || !b.length) return false
   if (a.length !== b.length) return false
-  return a.every(
-    (coord, idx) => coord[0] === b[idx][0] && coord[1] === b[idx][1]
-  )
+
+  const copy = [...b]
+  let idx = 0
+  while (copy.length) {
+    const coords = a[idx]
+    const found = copy.findIndex(([x, y]) => x === coords[0] && y === coords[1])
+    if (found < 0) return false
+
+    copy.splice(found, 1)
+    idx++
+  }
+
+  return true
 }
 
 export const isCoordInStrand = (row: number, col: number, strand: Strand) => {
@@ -116,4 +128,17 @@ export const constructDateFromString = (str: string): Date => {
   const [year, month, day] = str.split('-').map(Number)
   const correctDate = new Date(year, month - 1, day)
   return correctDate
+}
+
+export const isGameCompleted = (foundWords: FoundWords | null, game: Game) => {
+  if (!game || !foundWords) return false
+
+  if (
+    foundWords.themeWords.length === game.themeWords.length &&
+    foundWords.spangram === game.spangram
+  ) {
+    return true
+  }
+
+  return false
 }
