@@ -20,7 +20,7 @@ interface Game {
   index: number
 }
 
-const games = gamesArr as Game[]
+const games = gamesArr as unknown as Game[]
 
 const getNewGame = async (date: Date) => {
   const formattedDate = new Intl.DateTimeFormat('en-CA', {

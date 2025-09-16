@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import styles from './Home.module.scss'
 import { constructDateFromString, isGameCompleted } from '../../utils'
-import games from '../../../games.json'
+import gamesArr from '../../../games.json'
 import type { Game } from '../../models/models'
 import type { FoundWords } from '../GamePage/GamePage'
+
+const games = gamesArr as unknown as Game[]
 
 const checkmarkIcon = (
   <svg

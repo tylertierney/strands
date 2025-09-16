@@ -7,7 +7,7 @@ import Clue from '../Clue/Clue'
 import HintButton from '../HintButton/HintButton'
 import styles from './GamePage.module.scss'
 import gamesArr from '../../../games.json'
-const games = gamesArr as Game[]
+const games = gamesArr as unknown as Game[]
 
 const grayedOutText = 'color-mix(in hsl, var(--text-color) 80%, transparent)'
 
