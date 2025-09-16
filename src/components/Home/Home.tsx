@@ -50,7 +50,7 @@ export default function Home() {
           </tr>
         </thead>
         <tbody>
-          {games.toReversed().map((gameFromJson, i) => {
+          {(games as Game[]).map((gameFromJson, i) => {
             const game = gameFromJson as unknown as Game
 
             return (

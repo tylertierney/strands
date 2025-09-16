@@ -28,9 +28,9 @@ export default function Board({
   rows,
   onDraw,
   onConfirm,
-  foundThemeStrands,
-  foundSpangram,
-  hintStrand,
+  foundThemeStrands = [],
+  foundSpangram = [],
+  hintStrand = [],
   disabled = false,
 }: Props) {
   const [currentStrand, setCurrentStrand] = useState<Strand>([])

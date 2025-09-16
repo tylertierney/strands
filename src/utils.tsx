@@ -120,6 +120,8 @@ export const matchStrands = (a: Strand, b: Strand): boolean => {
 }
 
 export const isCoordInStrand = (row: number, col: number, strand: Strand) => {
+  if (!strand) return false
+
   const idx = strand.findIndex(([r, c]) => r === row && c === col)
   return idx > -1
 }

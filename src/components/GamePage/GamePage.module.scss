@@ -63,6 +63,7 @@
   .hintAndWordCount {
     align-items: center;
     justify-content: space-between;
+    margin-top: 1rem;
     margin-bottom: 4rem;
   }
 
@@ -117,7 +118,6 @@
 
     .gameInfo {
       align-self: center;
-      gap: 1rem;
       min-width: 320px;
 
       .resetButton {

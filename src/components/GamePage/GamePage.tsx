@@ -6,6 +6,7 @@ import Board, { type DrawEvent } from '../Board/Board'
 import Clue from '../Clue/Clue'
 import HintButton from '../HintButton/HintButton'
 import styles from './GamePage.module.scss'
+import games from '../../../games.json'
 
 const grayedOutText = 'color-mix(in hsl, var(--text-color) 80%, transparent)'
 
@@ -245,12 +246,22 @@ export default function GamePage() {
           })}
         </h2>
         <div className={styles.gameLinks}>
-          <Link className={`hoverable-link ${styles.gameLink}`} to={`home`}>
-            <span>&larr;</span> Previous Game
-          </Link>
-          <Link className={`hoverable-link ${styles.gameLink}`} to={`home`}>
-            Next Game &rarr;
-          </Link>
+          {game.index > 0 && (
+            <Link
+              className={`hoverable-link ${styles.gameLink}`}
+              to={`/games/${game.index - 1}`}
+            >
+              <span>&larr;</span> Previous Game
+            </Link>
+          )}
+          {game.index + 1 < games.length && (
+            <Link
+              className={`hoverable-link ${styles.gameLink}`}
+              to={`/games/${game.index + 1}`}
+            >
+              Next Game &rarr;
+            </Link>
+          )}
         </div>
       </div>
       <div className={styles.content}>
