@@ -157,6 +157,11 @@ export default function Board({
           let strand: Strand | undefined = undefined
           let strandType: StrandType = undefined
 
+          if (isCoordInStrand(row, col, hintStrand)) {
+            strandType = 'hint'
+            strand = hintStrand
+          }
+
           for (const themeWordStrand of foundThemeStrands) {
             if (isCoordInStrand(row, col, themeWordStrand)) {
               strandType = 'themeWord'
@@ -168,11 +173,6 @@ export default function Board({
           if (isCoordInStrand(row, col, foundSpangram)) {
             strandType = 'spangram'
             strand = foundSpangram
-          }
-
-          if (isCoordInStrand(row, col, hintStrand)) {
-            strandType = 'hint'
-            strand = hintStrand
           }
 
           if (isCoordInStrand(row, col, currentStrand)) {
