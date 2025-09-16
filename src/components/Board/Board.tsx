@@ -20,6 +20,7 @@ interface Props {
   onConfirm?: (e: DrawEvent) => void
   foundThemeStrands: Strand[]
   foundSpangram: Strand
+  hintStrand: Strand
 }
 
 export default function Board({
@@ -28,6 +29,7 @@ export default function Board({
   onConfirm,
   foundThemeStrands,
   foundSpangram,
+  hintStrand,
 }: Props) {
   const [currentStrand, setCurrentStrand] = useState<Strand>([])
 
@@ -101,8 +103,6 @@ export default function Board({
     if (!coords) return
     const [row, col] = coords
 
-    console.log(coords)
-
     const hasDraggedFromAnotherNode =
       draggingFrom?.row !== row || draggingFrom?.col !== col
 
@@ -168,6 +168,11 @@ export default function Board({
           if (isCoordInStrand(row, col, foundSpangram)) {
             strandType = 'spangram'
             strand = foundSpangram
+          }
+
+          if (isCoordInStrand(row, col, hintStrand)) {
+            strandType = 'hint'
+            strand = hintStrand
           }
 
           if (isCoordInStrand(row, col, currentStrand)) {

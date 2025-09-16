@@ -3,7 +3,12 @@ import { type Strand } from '../../../models/models'
 import { getConnectorPositions } from '../../../utils'
 import styles from './Letter.module.scss'
 
-export type StrandType = undefined | 'themeWord' | 'spangram' | 'currentStrand'
+export type StrandType =
+  | undefined
+  | 'themeWord'
+  | 'spangram'
+  | 'currentStrand'
+  | 'hint'
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   row: number

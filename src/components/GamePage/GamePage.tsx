@@ -1,4 +1,4 @@
-import { useLoaderData } from 'react-router-dom'
+import { Link, useLoaderData } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { type Game, type Strand } from '../../models/models'
 import { matchStrands } from '../../utils'
@@ -23,8 +23,15 @@ interface Display {
 }
 
 export default function GamePage() {
-  const { startingBoard, clue, themeCoords, spangramCoords, solutions, id } =
-    useLoaderData() as Game
+  const {
+    startingBoard,
+    clue,
+    themeCoords,
+    spangramCoords,
+    solutions,
+    id,
+    printDate,
+  } = useLoaderData() as Game
   const [currentWord, setCurrentWord] = useState('')
   const [foundWords, setFoundWords] = useState<FoundWords>({
     themeWords: [],
@@ -37,6 +44,7 @@ export default function GamePage() {
     animation: '',
     color: '',
   })
+  const [hintStrand, setHintStrand] = useState<Strand>([])
 
   const setDisplayAfterTimeout = (res: Display) => {
     setTimeout(() => {
@@ -172,11 +180,41 @@ export default function GamePage() {
     ((foundWords.other.length - foundWords.hintsUsed * 3) / 3) * 100
   )
 
-  console.log(hintPercentage)
+  const handleHintClick = () => {
+    const filtered = Object.keys(themeCoords).filter(
+      (word) => !foundWords.themeWords.includes(word)
+    )
+
+    const randomThemeWord = filtered[~~(Math.random() * filtered.length)]
+
+    const strand = themeCoords[randomThemeWord]
+
+    setFoundWords((prev) => ({
+      ...prev,
+      hintsUsed: prev.hintsUsed + 1,
+    }))
+    setHintStrand(strand)
+  }
 
   return (
     <>
-      {/* <Navbar /> */}
+      <div className={styles.header}>
+        <h2 className={styles.date}>
+          {new Date(printDate).toLocaleDateString('en-us', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+          })}
+        </h2>
+        <div className={styles.gameLinks}>
+          <Link className={`hoverable-link ${styles.gameLink}`} to={`home`}>
+            <span>&larr;</span> Previous Game
+          </Link>
+          <Link className={`hoverable-link ${styles.gameLink}`} to={`home`}>
+            Next Game &rarr;
+          </Link>
+        </div>
+      </div>
       <div className={styles.content}>
         <Clue clue={clue} />
         {currentWord ? (
@@ -200,16 +238,12 @@ export default function GamePage() {
           onConfirm={handleConfirm}
           foundThemeStrands={foundThemeStrands}
           foundSpangram={foundSpangram}
+          hintStrand={hintStrand}
         />
         <div className={styles.boardFooter}>
           <HintButton
             percentage={hintPercentage}
-            onClick={() =>
-              setFoundWords((prev) => ({
-                ...prev,
-                hintsUsed: prev.hintsUsed + 1,
-              }))
-            }
+            onClick={handleHintClick}
             disabled={hintPercentage < 100}
           >
             Hint
