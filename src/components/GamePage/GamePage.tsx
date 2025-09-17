@@ -258,13 +258,16 @@ export default function GamePage() {
   return (
     <>
       <div className={styles.header}>
-        <h2 className={styles.date}>
-          {constructDateFromString(printDate).toLocaleDateString('en-us', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-          })}
-        </h2>
+        <div className={styles.dateAndId}>
+          <span>#{game.index}</span>
+          <h1 className={styles.date}>
+            {constructDateFromString(printDate).toLocaleDateString('en-us', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+            })}
+          </h1>
+        </div>
         <div className={styles.gameLinks}>
           {game.index > 0 && (
             <Link

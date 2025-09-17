@@ -4,8 +4,16 @@
   padding: 0 2rem 1rem 2rem;
   margin-bottom: 2rem;
 
-  .date {
+  .dateAndId {
+    display: flex;
+    flex-direction: column;
     margin: 0rem 0 0.75rem 0;
+    font-family: monospace;
+
+    .date {
+      margin: 0;
+      font-size: 1.4rem;
+    }
   }
 
   .gameLinks {
