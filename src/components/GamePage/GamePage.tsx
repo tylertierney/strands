@@ -11,11 +11,19 @@ const games = gamesArr as unknown as Game[]
 
 const grayedOutText = 'color-mix(in hsl, var(--text-color) 80%, transparent)'
 
+const defaultFoundWords: FoundWords = {
+  themeWords: [],
+  spangram: '',
+  other: [],
+  hintsUsed: 0,
+  hintStrand: [],
+}
 export interface FoundWords {
   themeWords: string[]
   spangram: string
   other: string[]
   hintsUsed: number
+  hintStrand: Strand
 }
 
 interface Display {
@@ -37,18 +45,12 @@ export default function GamePage() {
   } = game
 
   const [currentWord, setCurrentWord] = useState('')
-  const [foundWords, setFoundWords] = useState<FoundWords>({
-    themeWords: [],
-    spangram: '',
-    other: [],
-    hintsUsed: 0,
-  })
+  const [foundWords, setFoundWords] = useState<FoundWords>(defaultFoundWords)
   const [display, setDisplay] = useState<Display>({
     text: '',
     animation: '',
     color: '',
   })
-  const [hintStrand, setHintStrand] = useState<Strand>([])
 
   const setDisplayAfterTimeout = (res: Display) => {
     setTimeout(() => {
@@ -175,7 +177,17 @@ export default function GamePage() {
     if (foundWordsFromLocal) {
       const parsed = JSON.parse(foundWordsFromLocal) as FoundWords
       setFoundWords(parsed)
+      setCurrentWord('')
+    } else {
+      setFoundWords(defaultFoundWords)
     }
+
+    setDisplay({
+      text: '',
+      animation: '',
+      color: '',
+    })
+    setCurrentWord('')
   }, [id])
 
   const foundThemeStrands: Strand[] = foundWords.themeWords.map(
@@ -196,11 +208,13 @@ export default function GamePage() {
 
     const strand = themeCoords[randomThemeWord]
 
-    setFoundWords((prev) => ({
-      ...prev,
-      hintsUsed: prev.hintsUsed + 1,
-    }))
-    setHintStrand(strand)
+    const newFoundWords: FoundWords = {
+      ...foundWords,
+      hintsUsed: foundWords.hintsUsed + 1,
+      hintStrand: strand,
+    }
+    setFoundWords(newFoundWords)
+    localStorage.setItem(`strings-state-${id}`, JSON.stringify(newFoundWords))
   }
 
   const getHintAndWordCount = (className: string) => (
@@ -228,6 +242,7 @@ export default function GamePage() {
           spangram: '',
           themeWords: [],
           hintsUsed: 0,
+          hintStrand: [],
         })
         localStorage.removeItem(`strings-state-${id}`)
       }}
@@ -293,7 +308,7 @@ export default function GamePage() {
             onConfirm={handleConfirm}
             foundThemeStrands={foundThemeStrands}
             foundSpangram={foundSpangram}
-            hintStrand={hintStrand}
+            hintStrand={foundWords.hintStrand}
             disabled={isGameCompleted(foundWords, game)}
           />
           {getHintAndWordCount(styles.hideOnLargeScreen)}
