@@ -64,6 +64,7 @@
     color: var(--text-color);
     max-height: 90dvh;
     overflow-y: scroll;
+    max-width: 500px;
 
     .modalHeader {
       display: flex;
