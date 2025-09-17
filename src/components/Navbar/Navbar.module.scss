@@ -14,15 +14,112 @@
     border-bottom: 1px solid var(--text-color);
   }
 
-  .themeButton {
-    background: none;
-    border: none;
+  .icons {
     display: flex;
-    justify-content: center;
     align-items: center;
-    cursor: pointer;
+    gap: 1rem;
+
+    .button {
+      background: none;
+      border: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: var(--text-color);
+      fill: var(--text-color);
+      stroke: var(--text-color);
+    }
+  }
+}
+
+.backdrop {
+  position: fixed;
+  width: 100vw;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.515);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  justify-content: center;
+  align-items: center;
+  outline: none;
+  box-sizing: content-box;
+
+  &:open {
+    display: flex;
+  }
+
+  &:hidden {
+    display: none;
+  }
+
+  .modal {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-color);
+    border-radius: 0.5rem;
+    padding: 1rem;
     color: var(--text-color);
-    fill: var(--text-color);
-    stroke: var(--text-color);
+    max-height: 90dvh;
+    overflow-y: scroll;
+
+    .modalHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      .modalTitle {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+
+      .closeIcon {
+        padding: 0.6rem;
+        width: 1.2rem;
+        height: 1.2rem;
+        fill: var(--text-color);
+        stroke: var(--text-color);
+        border-radius: 100%;
+        cursor: pointer;
+        box-sizing: content-box;
+
+        &:hover {
+          background-color: color-mix(
+            in hsl,
+            var(--text-color) 15%,
+            var(--bg-color)
+          );
+        }
+      }
+    }
+
+    .modalBody {
+      display: flex;
+      flex-direction: column;
+
+      .video {
+        align-self: center;
+      }
+
+      .h2 {
+        font-size: 1.1rem;
+      }
+
+      .ul {
+        margin: 0;
+        padding-left: 1.5rem;
+      }
+
+      .blue {
+        color: var(--readable-theme-word);
+      }
+
+      .yellow {
+        color: var(--spangram);
+      }
+    }
   }
 }
