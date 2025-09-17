@@ -1,7 +1,11 @@
 import { Link, useLoaderData } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { type Game, type Strand } from '../../models/models'
-import { isGameCompleted, matchStrands } from '../../utils'
+import {
+  constructDateFromString,
+  isGameCompleted,
+  matchStrands,
+} from '../../utils'
 import Board, { type DrawEvent } from '../Board/Board'
 import Clue from '../Clue/Clue'
 import HintButton from '../HintButton/HintButton'
@@ -255,7 +259,7 @@ export default function GamePage() {
     <>
       <div className={styles.header}>
         <h2 className={styles.date}>
-          {new Date(printDate).toLocaleDateString('en-us', {
+          {constructDateFromString(printDate).toLocaleDateString('en-us', {
             month: 'long',
             day: 'numeric',
             year: 'numeric',
