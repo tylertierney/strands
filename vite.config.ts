@@ -7,6 +7,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      workbox: {
+        maximumFileSizeToCacheInBytes: 5_000_000,
+      },
       registerType: 'autoUpdate',
       manifest: {
         name: 'Strands',

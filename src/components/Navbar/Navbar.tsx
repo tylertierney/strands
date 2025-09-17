@@ -74,7 +74,7 @@ export default function Navbar() {
               loop={true}
               width={300}
             >
-              <source src='/public/instructions.mp4' type='video/mp4'></source>
+              <source src='/instructions.mp4' type='video/mp4'></source>
             </video>
             <section>
               <h2 className={styles.h2}>
