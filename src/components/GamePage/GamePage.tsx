@@ -173,7 +173,14 @@ export default function GamePage() {
     const foundWordsFromLocal = localStorage.getItem(`strings-state-${id}`)
     if (foundWordsFromLocal) {
       const parsed = JSON.parse(foundWordsFromLocal) as FoundWords
-      setFoundWords(parsed)
+      setFoundWords({
+        result: parsed.result ?? [],
+        themeWords: parsed.themeWords ?? [],
+        hintStrand: parsed.hintStrand ?? [],
+        other: parsed.other ?? [],
+        hintsUsed: parsed.hintsUsed ?? 0,
+        spangram: parsed.spangram ?? '',
+      })
       setCurrentWord('')
     } else {
       setFoundWords(defaultFoundWords)
