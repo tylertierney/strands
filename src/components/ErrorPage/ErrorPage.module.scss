@@ -1,0 +1,22 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 1rem 0 1rem;
+  font-family: monospace;
+
+  .emoji {
+    font-size: 4rem;
+  }
+
+  .p {
+    text-align: center;
+
+    .link {
+      color: var(--readable-theme-word);
+      text-decoration: none;
+      border-bottom: 1px solid var(--readable-theme-word);
+    }
+  }
+}

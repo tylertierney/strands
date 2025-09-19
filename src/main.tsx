@@ -7,12 +7,13 @@ import Home from './components/Home/Home.tsx'
 import GamePage from './components/GamePage/GamePage.tsx'
 import gamesArr from '../games.json'
 import type { Game } from './models/models.tsx'
+import ErrorPage from './components/ErrorPage/ErrorPage.tsx'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
-    // errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Home /> },
       {

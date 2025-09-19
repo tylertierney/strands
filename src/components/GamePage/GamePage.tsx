@@ -127,7 +127,7 @@ export default function GamePage() {
       setDisplay({
         text: e.word,
         animation: styles.bounce,
-        color: 'var(--spangram)',
+        color: 'var(--readable-spangram)',
       })
       const newFoundWords: FoundWords = {
         ...foundWords,
@@ -221,12 +221,14 @@ export default function GamePage() {
     localStorage.setItem(`strings-state-${id}`, JSON.stringify(newFoundWords))
   }
 
+  const gameComplete = isGameCompleted(foundWords, game)
+
   const getHintAndWordCount = (className: string) => (
     <div className={`${styles.hintAndWordCount} ${className}`}>
       <HintButton
         percentage={hintPercentage}
         onClick={handleHintClick}
-        disabled={hintPercentage < 100}
+        disabled={hintPercentage < 100 || gameComplete}
       >
         Hint
       </HintButton>
@@ -295,7 +297,14 @@ export default function GamePage() {
         </div>
         <div>
           {currentWord ? (
-            <span className={styles.display}>{currentWord}</span>
+            <span
+              className={styles.display}
+              style={{
+                fontSize: currentWord.length > 16 ? '1.3rem' : '1.6rem',
+              }}
+            >
+              {currentWord}
+            </span>
           ) : (
             <span
               className={`
@@ -316,7 +325,7 @@ export default function GamePage() {
             foundThemeStrands={foundThemeStrands}
             foundSpangram={foundSpangram}
             hintStrand={foundWords.hintStrand}
-            disabled={isGameCompleted(foundWords, game)}
+            disabled={gameComplete}
           />
           {getHintAndWordCount(styles.hideOnLargeScreen)}
         </div>

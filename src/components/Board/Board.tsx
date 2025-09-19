@@ -1,5 +1,5 @@
 import { useEffect, useState, type PointerEvent } from 'react'
-import type { Strand } from '../../models/models'
+import type { Coords, Strand } from '../../models/models'
 import {
   coordIsDetachedFromEnd,
   flattenArrayOfStrings,
@@ -138,7 +138,12 @@ export default function Board({
   } | null>(null)
 
   return (
-    <div style={{ touchAction: 'none' }}>
+    <div
+      className={styles.board}
+      style={{
+        touchAction: disabled ? 'auto' : 'none',
+      }}
+    >
       <div
         className={styles.grid}
         style={{

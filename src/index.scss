@@ -20,13 +20,15 @@ body {
   --hint-button-bg: #9fe7a7a6;
 
   --readable-theme-word: rgb(93, 184, 243);
+  --readable-spangram: #e5cb43;
 
   &.light-theme {
     --text-color: rgb(74, 73, 83);
     --bg-color: #f2f2f2;
     --current-strand: rgb(208, 212, 223);
     --theme-word: rgb(187, 207, 255);
-    --spangram: #c8ac16;
+    --spangram: #e7d262;
+    --readable-spangram: #c8ac16;
   }
 }
 
