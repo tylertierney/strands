@@ -2,8 +2,7 @@ import { Link } from 'react-router-dom'
 import styles from './Home.module.scss'
 import { constructDateFromString, isGameCompleted } from '../../utils'
 import gamesArr from '../../../games.json'
-import type { Game } from '../../models/models'
-import type { FoundWords } from '../GamePage/GamePage'
+import type { Game, FoundWords } from '../../models/models'
 
 const games = gamesArr as unknown as Game[]
 

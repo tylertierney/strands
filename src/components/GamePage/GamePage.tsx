@@ -1,6 +1,11 @@
 import { Link, useLoaderData } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import { type Game, type Strand } from '../../models/models'
+import { useEffect, useLayoutEffect, useState } from 'react'
+import {
+  defaultFoundWords,
+  type FoundWords,
+  type Game,
+  type Strand,
+} from '../../models/models'
 import {
   constructDateFromString,
   isGameCompleted,
@@ -11,24 +16,10 @@ import Clue from '../Clue/Clue'
 import HintButton from '../HintButton/HintButton'
 import styles from './GamePage.module.scss'
 import gamesArr from '../../../games.json'
+import Result from '../Result/Result'
 const games = gamesArr as unknown as Game[]
 
 const grayedOutText = 'color-mix(in hsl, var(--text-color) 80%, transparent)'
-
-const defaultFoundWords: FoundWords = {
-  themeWords: [],
-  spangram: '',
-  other: [],
-  hintsUsed: 0,
-  hintStrand: [],
-}
-export interface FoundWords {
-  themeWords: string[]
-  spangram: string
-  other: string[]
-  hintsUsed: number
-  hintStrand: Strand
-}
 
 interface Display {
   color: string
@@ -103,6 +94,7 @@ export default function GamePage() {
         const newFoundWords: FoundWords = {
           ...foundWords,
           themeWords: [...foundWords.themeWords, themeWord],
+          result: [...foundWords.result, 'themeWord'],
         }
         setFoundWords(newFoundWords)
         localStorage.setItem(
@@ -132,6 +124,7 @@ export default function GamePage() {
       const newFoundWords: FoundWords = {
         ...foundWords,
         spangram: e.word,
+        result: [...foundWords.result, 'spangram'],
       }
       setFoundWords(newFoundWords)
       localStorage.setItem(`strings-state-${id}`, JSON.stringify(newFoundWords))
@@ -216,12 +209,17 @@ export default function GamePage() {
       ...foundWords,
       hintsUsed: foundWords.hintsUsed + 1,
       hintStrand: strand,
+      result: [...foundWords.result, 'hint'],
     }
     setFoundWords(newFoundWords)
     localStorage.setItem(`strings-state-${id}`, JSON.stringify(newFoundWords))
   }
 
   const gameComplete = isGameCompleted(foundWords, game)
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   const getHintAndWordCount = (className: string) => (
     <div className={`${styles.hintAndWordCount} ${className}`}>
@@ -233,8 +231,12 @@ export default function GamePage() {
         Hint
       </HintButton>
       <span>
-        {foundWords.themeWords.length + (foundSpangram.length ? 1 : 0)} of{' '}
-        {Object.keys(themeCoords).length + 1} theme words found.
+        <b>
+          {foundWords.themeWords.length + (foundSpangram.length ? 1 : 0)}&nbsp;
+        </b>
+        of&nbsp;
+        <b>{Object.keys(themeCoords).length + 1}&nbsp;</b>
+        theme words found.
       </span>
     </div>
   )
@@ -249,6 +251,7 @@ export default function GamePage() {
           themeWords: [],
           hintsUsed: 0,
           hintStrand: [],
+          result: [],
         })
         localStorage.removeItem(`strings-state-${id}`)
       }}
@@ -293,6 +296,12 @@ export default function GamePage() {
         <div className={styles.gameInfo}>
           <Clue className={styles.clue} clue={clue} />
           {getHintAndWordCount(styles.showOnLargeScreen)}
+          {gameComplete && (
+            <Result
+              result={foundWords.result}
+              className={`${styles.result} ${styles.showOnLargeScreen}`}
+            />
+          )}
           {getResetButton(styles.showOnLargeScreen)}
         </div>
         <div>
@@ -329,6 +338,12 @@ export default function GamePage() {
           />
           {getHintAndWordCount(styles.hideOnLargeScreen)}
         </div>
+        {gameComplete && (
+          <Result
+            result={foundWords.result}
+            className={`${styles.result} ${styles.hideOnLargeScreen}`}
+          />
+        )}
         {getResetButton(styles.hideOnLargeScreen)}
       </div>
     </>

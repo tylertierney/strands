@@ -75,15 +75,18 @@
   .hintAndWordCount {
     align-items: center;
     justify-content: space-between;
-    margin-top: 1rem;
-    margin-bottom: 4rem;
+    margin: 1rem 0 2rem 0;
+  }
+
+  .result {
+    align-self: center;
   }
 
   .resetButton {
     justify-content: center;
     align-items: center;
     padding: 1rem;
-    margin-bottom: 10rem;
+    margin: 4rem 0 10rem 0;
     font-size: 1rem;
     cursor: pointer;
     background: rgba(255, 98, 98, 0.4);
@@ -100,11 +103,11 @@
 }
 
 .showOnLargeScreen {
-  display: none;
+  display: none !important;
 }
 
 .hideOnLargeScreen {
-  display: flex;
+  display: flex !important;
 }
 
 @media only screen and (min-width: 768px) {
@@ -126,24 +129,25 @@
     flex-direction: row;
     align-self: stretch;
     justify-content: center;
-    gap: 8rem;
+    gap: 6rem;
+    margin-bottom: 10rem;
 
     .gameInfo {
       align-self: center;
       min-width: 320px;
 
       .resetButton {
-        margin: 0;
+        margin: 4rem 0 0 0;
       }
     }
   }
 
   .showOnLargeScreen {
-    display: flex;
+    display: flex !important;
   }
 
   .hideOnLargeScreen {
-    display: none;
+    display: none !important;
   }
 }
 

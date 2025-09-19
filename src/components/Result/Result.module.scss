@@ -1,0 +1,42 @@
+.result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+
+  .resultItemGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .resultRow {
+      display: flex;
+      gap: 0.5rem;
+
+      .icon {
+        font-size: 30px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &.themeWord {
+          background-color: var(--readable-theme-word);
+        }
+
+        &.spangram {
+          background-color: var(--readable-spangram);
+        }
+      }
+    }
+  }
+
+  .p {
+    font-size: 0.9rem;
+    margin: 0;
+    text-align: center;
+    max-width: 300px;
+  }
+}

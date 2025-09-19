@@ -16,3 +16,23 @@ export interface Game {
   spangramCoords: Strand
   index: number
 }
+
+export type ResultItem = 'themeWord' | 'spangram' | 'hint'
+
+export interface FoundWords {
+  themeWords: string[]
+  spangram: string
+  other: string[]
+  hintsUsed: number
+  hintStrand: Strand
+  result: ResultItem[]
+}
+
+export const defaultFoundWords: FoundWords = {
+  themeWords: [],
+  spangram: '',
+  other: [],
+  hintsUsed: 0,
+  hintStrand: [],
+  result: [],
+}

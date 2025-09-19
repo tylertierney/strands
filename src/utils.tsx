@@ -1,5 +1,4 @@
-import type { FoundWords } from './components/GamePage/GamePage'
-import type { Coords, Game, Strand } from './models/models'
+import type { Coords, Game, Strand, FoundWords } from './models/models'
 
 export const getWordFromStrand = ({
   strand,

@@ -13,12 +13,14 @@ export default function Navbar() {
   const showModal = () => {
     if (!modalRef.current) return
     modalRef.current.showModal()
+    document.body.style.overflow = 'hidden'
   }
 
   const hideModal = () => {
     if (!modalRef.current) return
 
     modalRef.current.close()
+    document.body.style.overflow = 'unset'
   }
 
   return (
@@ -78,7 +80,7 @@ export default function Navbar() {
             </video>
             <section>
               <h2 className={styles.h2}>
-                <strong>Find theme words to fill the board.</strong>
+                <b>Find theme words to fill the board.</b>
               </h2>
               <ul className={styles.ul}>
                 <li className={styles.li}>
@@ -95,7 +97,7 @@ export default function Navbar() {
             </section>
             <section>
               <h2 className={styles.h2}>
-                <strong>Find the "spangram".</strong>
+                <b>Find the "spangram".</b>
               </h2>
               <ul className={styles.ul}>
                 <li className={styles.li}>
@@ -116,7 +118,7 @@ export default function Navbar() {
             </section>
             <section>
               <h2 className={styles.h2}>
-                <strong>Need a hint?</strong>
+                <b>Need a hint?</b>
               </h2>
               <ul className={styles.ul}>
                 <li className={styles.li}>

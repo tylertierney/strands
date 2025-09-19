@@ -1,5 +1,5 @@
 import { useEffect, useState, type PointerEvent } from 'react'
-import type { Coords, Strand } from '../../models/models'
+import type { Strand } from '../../models/models'
 import {
   coordIsDetachedFromEnd,
   flattenArrayOfStrings,
