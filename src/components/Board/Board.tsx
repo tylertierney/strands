@@ -71,6 +71,10 @@ export default function Board({
   }
 
   useEffect(() => {
+    setCurrentStrand([])
+  }, [rows])
+
+  useEffect(() => {
     const word = getWordFromStrand({ strand: currentStrand, rows })
 
     onDraw?.({

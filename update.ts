@@ -35,6 +35,8 @@ const getNewGame = async (date: Date) => {
     const response = await fetch(url)
     const game = (await response.json()) as Game
 
+    console.log(game)
+
     if (game.status === 'OK') {
       games.unshift({
         ...game,
