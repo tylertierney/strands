@@ -143,3 +143,14 @@ export const isGameCompleted = (foundWords: FoundWords | null, game: Game) => {
 
   return false
 }
+
+export const isGameInProgress = (foundWords: FoundWords | null) => {
+  if (!foundWords) return false
+
+  return Boolean(
+    foundWords.themeWords.length ||
+      foundWords.spangram.length ||
+      foundWords.hintsUsed > 0 ||
+      foundWords.other.length
+  )
+}

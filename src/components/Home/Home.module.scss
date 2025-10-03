@@ -14,13 +14,13 @@
       padding: 0.25rem 0;
 
       &.id {
-        width: 50px;
-        min-width: unset;
+        width: 40px;
+        min-width: 40px;
       }
 
       &.completed {
-        width: 90px;
-        min-width: unset;
+        width: 100px;
+        min-width: 100px;
       }
     }
   }

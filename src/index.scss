@@ -22,6 +22,17 @@ body {
   --readable-theme-word: rgb(93, 184, 243);
   --readable-spangram: #e5cb43;
 
+  // badge
+  --badge-success-bg: rgba(0, 234, 108, 0.2);
+  --badge-success-color: rgb(204, 255, 221);
+  --badge-warning-bg: #ffcd0033;
+  --badge-warning-color: #fff5cc;
+  --badge-danger-bg: #ff494433;
+  --badge-danger-color: #ffdbda;
+  --badge-info-bg: #219dff33;
+  --badge-info-color: #cceaf7;
+  ////////
+
   &.light-theme {
     --text-color: rgb(74, 73, 83);
     --bg-color: #f2f2f2;
@@ -29,6 +40,17 @@ body {
     --theme-word: rgb(187, 207, 255);
     --spangram: #e7d262;
     --readable-spangram: #c8ac16;
+
+    // badge
+    --badge-success-bg: rgba(0, 183, 85, 0.1);
+    --badge-success-color: rgb(0, 115, 119);
+    --badge-warning-bg: #ffcd0045;
+    --badge-warning-color: #17355f;
+    --badge-danger-bg: #ff494433;
+    --badge-danger-color: #b60000;
+    --badge-info-bg: #219dff33;
+    --badge-info-color: #0041a5;
+    ///////
   }
 }
 

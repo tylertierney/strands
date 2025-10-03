@@ -37,6 +37,7 @@ export default function GamePage() {
     solutions,
     id,
     printDate,
+    spangram,
   } = game
 
   const [currentWord, setCurrentWord] = useState('')
@@ -106,7 +107,7 @@ export default function GamePage() {
     }
 
     // check spangram
-    if (matchStrands(e.strand, spangramCoords)) {
+    if (matchStrands(e.strand, spangramCoords) && e.word === spangram) {
       if (foundWords.spangram === e.word) {
         setDisplayAfterTimeout({
           text: 'Already found',
