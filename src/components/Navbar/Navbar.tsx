@@ -27,7 +27,7 @@ export default function Navbar() {
     <>
       <nav className={styles.navbar}>
         <Link className={styles.logo} to='home'>
-          strings
+          strands
         </Link>
         <div className={styles.icons}>
           <button onClick={showModal} className={styles.button}>
