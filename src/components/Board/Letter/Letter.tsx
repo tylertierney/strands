@@ -15,6 +15,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   col: number
   strand?: Strand
   strandType?: StrandType
+  extraHint: boolean
 }
 
 export default function Letter({
@@ -22,6 +23,7 @@ export default function Letter({
   col,
   strand,
   strandType,
+  extraHint = false,
   children,
   ...rest
 }: PropsWithChildren<Props>) {
@@ -40,7 +42,8 @@ export default function Letter({
   const classes = inStrand
     ? `${styles.highlighted}
       ${strandType ? styles[strandType] : ''}
-      ${idxInStrand === strand.length - 1 ? styles.endOfStrand : ''}`
+      ${idxInStrand === strand.length - 1 ? styles.endOfStrand : ''}
+      ${extraHint && strandType === 'hint' ? styles.extraHint : ''}`
     : ''
 
   return (
@@ -48,6 +51,12 @@ export default function Letter({
       className={`
         ${styles.letter} 
         ${classes}`}
+      style={{
+        animationDelay:
+          extraHint && strandType === 'hint'
+            ? (idxInStrand + 1) * 0.5 + 's'
+            : 'unset',
+      }}
       {...rest}
     >
       {inStrand && (

@@ -50,6 +50,10 @@
   &.hint {
     background-color: transparent;
     border: 2px dotted #1a7fa0;
+
+    &.extraHint {
+      animation: nodeBounce 6s ease-in-out infinite forwards;
+    }
   }
 
   &.highlighted {

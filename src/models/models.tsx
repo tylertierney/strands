@@ -25,6 +25,7 @@ export interface FoundWords {
   other: string[]
   hintsUsed: number
   hintStrand: Strand
+  extraHint: boolean
   result: ResultItem[]
 }
 
@@ -34,5 +35,6 @@ export const defaultFoundWords: FoundWords = {
   other: [],
   hintsUsed: 0,
   hintStrand: [],
+  extraHint: false,
   result: [],
 }

@@ -92,8 +92,18 @@ export default function GamePage() {
           animation: styles.bounce,
           color: 'var(--readable-theme-word)',
         })
+
+        const foundThemeWordWasTheCurrentHint = matchStrands(
+          e.strand,
+          foundWords.hintStrand
+        )
+
         const newFoundWords: FoundWords = {
           ...foundWords,
+          hintStrand: foundThemeWordWasTheCurrentHint
+            ? []
+            : foundWords.hintStrand,
+          extraHint: false,
           themeWords: [...foundWords.themeWords, themeWord],
           result: [...foundWords.result, 'themeWord'],
         }
@@ -178,6 +188,7 @@ export default function GamePage() {
         result: parsed.result ?? [],
         themeWords: parsed.themeWords ?? [],
         hintStrand: parsed.hintStrand ?? [],
+        extraHint: parsed.extraHint ?? false,
         other: parsed.other ?? [],
         hintsUsed: parsed.hintsUsed ?? 0,
         spangram: parsed.spangram ?? '',
@@ -205,6 +216,18 @@ export default function GamePage() {
   )
 
   const handleHintClick = () => {
+    if (foundWords.hintStrand.length) {
+      const newFoundWords: FoundWords = {
+        ...foundWords,
+        extraHint: true,
+        hintsUsed: foundWords.hintsUsed + 1,
+        result: [...foundWords.result, 'hint'],
+      }
+      setFoundWords(newFoundWords)
+      localStorage.setItem(`strings-state-${id}`, JSON.stringify(newFoundWords))
+      return
+    }
+
     const filtered = Object.keys(themeCoords).filter(
       (word) => !foundWords.themeWords.includes(word)
     )
@@ -259,6 +282,7 @@ export default function GamePage() {
           themeWords: [],
           hintsUsed: 0,
           hintStrand: [],
+          extraHint: false,
           result: [],
         })
         localStorage.removeItem(`strings-state-${id}`)
@@ -343,6 +367,7 @@ export default function GamePage() {
             foundSpangram={foundSpangram}
             hintStrand={foundWords.hintStrand}
             disabled={gameComplete}
+            extraHint={foundWords.extraHint}
           />
           {getHintAndWordCount(styles.hideOnLargeScreen)}
         </div>

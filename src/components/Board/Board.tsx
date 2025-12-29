@@ -21,7 +21,8 @@ interface Props {
   foundThemeStrands: Strand[]
   foundSpangram: Strand
   hintStrand: Strand
-  disabled?: boolean
+  disabled: boolean
+  extraHint: boolean
 }
 
 export default function Board({
@@ -32,6 +33,7 @@ export default function Board({
   foundSpangram = [],
   hintStrand = [],
   disabled = false,
+  extraHint = false,
 }: Props) {
   const [currentStrand, setCurrentStrand] = useState<Strand>([])
 
@@ -205,6 +207,7 @@ export default function Board({
               }}
               strandType={strandType}
               disabled={disabled}
+              extraHint={extraHint}
             >
               {letter}
             </Letter>
